@@ -9,14 +9,16 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import Navbar from "./components/layout/Navbar/Navbar";
 import IsPrivate from "./components/IsPrivate/IsPrivate";
 import IsAnon from "./components/IsAnon/IsAnon";
+import LandingPage from "./pages/LandingPage/LandingPage";
+
 
 function App() {
   return (
     <div className="App">
-      <Navbar />
-
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<LandingPage />} />
+
+        <Route path="/Home" element={<HomePage />} />
 
         <Route
           path="/profile"
