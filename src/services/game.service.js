@@ -2,49 +2,63 @@ import api from "./api.service";
 
 class GameService {
   getAllGames = () => {
-    return api.get("/games");
+    return api.get("/api/games");
   };
 
   getGame = (gameId) => {
-    return api.get(`/games/${gameId}`);
+    return api.get(`/api/games/${gameId}`);
+  };
+
+  getGamesByIds = async (gameIds) => {
+    try {
+      // If your API has a bulk endpoint, use that
+      // return api.post("/api/games/bulk", { ids: gameIds });
+
+      // Otherwise, fetch games one by one and compile the results
+      const gamePromises = gameIds.map((id) => this.getGame(id));
+      const responses = await Promise.all(gamePromises);
+      return responses.map((response) => response.data);
+    } catch (error) {
+      console.error("Error fetching games by IDs:", error);
+      throw error;
+    }
   };
 
   postPlaySession = (gameId, playData) => {
-    return api.post(`/analytics/games/${gameId}/play`, playData);
+    return api.post(`/api/analytics/games/${gameId}/play`, playData);
   };
 
   postUserAction = (gameId, action) => {
-    return api.post(`/analytics/games/${gameId}/action`, {
+    return api.post(`/api/analytics/games/${gameId}/action`, {
       userAction: action,
     });
   };
 
   getGameAnalytics = (gameId) => {
-    return api.get(`/analytics/games/${gameId}/analytics`);
+    return api.get(`/api/analytics/games/${gameId}/analytics`);
   };
 
   getGameRatings = (gameId, sort = "newest") => {
-    return api.get(`/games/${gameId}/ratings?sort=${sort}`);
-    //sort added to have that possibility
+    return api.get(`/api/games/${gameId}/ratings?sort=${sort}`);
   };
 
   postGameRating = (gameId, score, review = "") => {
-    return api.post(`/games/${gameId}/ratings`, {
+    return api.post(`/api/games/${gameId}/ratings`, {
       score,
       review,
     });
   };
 
   getGameRatingsStats = (gameId) => {
-    return api.get(`/games/${gameId}/ratings/stats`);
+    return api.get(`/api/games/${gameId}/ratings/stats`);
   };
 
   getGameLeaderboard = (gameId) => {
-    return api.get(`/leaderboard/games/${gameId}/leaderboard`);
+    return api.get(`/api/leaderboard/games/${gameId}/leaderboard`);
   };
 
   postScoreLeaderboard = (gameId, score, details = {}) => {
-    return api.post(`/leaderboard/games/${gameId}/leaderboard`, {
+    return api.post(`/api/leaderboard/games/${gameId}/leaderboard`, {
       score,
       ...details,
     });
@@ -62,7 +76,7 @@ class GameService {
       }
 
       // Get details for all favorited games
-      return await getGamesByIds(favoriteIds);
+      return await this.getGamesByIds(favoriteIds);
     } catch (error) {
       console.error("Error fetching favorite games:", error);
       throw error;
@@ -71,15 +85,15 @@ class GameService {
 
   //Admin only
   postGame = (requestBody) => {
-    return this.api.post(`games`, requestBody);
+    return api.post(`/api/games`, requestBody);
   };
 
   updateGame = (gameId, requestBody) => {
-    return this.api.post(`games/${gameId}`, requestBody);
+    return api.put(`/api/games/${gameId}`, requestBody);
   };
 
   deleteGame = (gameId) => {
-    return this.api.post(`games/${gameId}`);
+    return api.delete(`/api/games/${gameId}`);
   };
 }
 

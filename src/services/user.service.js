@@ -3,36 +3,36 @@ import authService from "./auth.service";
 
 class UserService {
   getUser = (userId) => {
-    return api.get(`/users/${userId}`);
+    return api.get(`/api/users/${userId}`);
   };
 
   updateUser = (userId, requestBody) => {
-    return api.put(`/users/${userId}`, requestBody);
+    return api.put(`/api/users/${userId}`, requestBody);
   };
 
   deleteUser = (userId) => {
-    return api.delete(`/users/${userId}`);
+    return api.delete(`/api/users/${userId}`);
   };
 
   getPlayHistory = (userId) => {
-    return api.get(`/users/${userId || ""}/history`);
+    return api.get(`/api/users/${userId || ""}/history`);
   };
   // ${userId || ""} because the user has two ways of getting his info
 
   getUserAchievements = (userId) => {
-    return api.get(`/users/${userId || ""}/achievements`);
+    return api.get(`/api/users/${userId || ""}/achievements`);
   };
 
   getUserRank = (userId) => {
-    return api.get(`/users/${userId || ""}/ranks`);
+    return api.get(`/api/users/${userId || ""}/ranks`);
   };
 
   getUserRatings = (userId) => {
-    return api.get(`/users/${userId || ""}/ratings`);
+    return api.get(`/api/users/${userId || ""}/ratings`);
   };
 
   getUserRatingForGame = (userId) => {
-    return api.get(`/users/${userId}/my-rating`);
+    return api.get(`/api/users/${userId}/my-rating`);
   };
 
   // Get current user data from auth verify endpoint
@@ -57,13 +57,13 @@ class UserService {
   };
 
   addToFavourites = (gameId) => {
-    return api.post(`/analytics/games/${gameId}/action`, {
+    return api.post(`/api/analytics/games/${gameId}/action`, {
       userAction: "favourite",
     });
   };
 
   removeFromFavourites = (gameId) => {
-    return api.post(`/analytics/games/${gameId}/action`, {
+    return api.post(`/api/analytics/games/${gameId}/action`, {
       userAction: "unfavourite",
     });
   };
@@ -80,9 +80,9 @@ class UserService {
 
   //Admin only
   getAllUsers = async () => {
-    return api.get(`/users`);
+    return api.get(`/api/users`);
   };
-};
+}
 
 // Create one instance of the service
 const userService = new UserService();

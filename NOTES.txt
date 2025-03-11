@@ -1,0 +1,59 @@
+Folder structure so far
+
+C:.
+├───public
+└───src
+    ├───assets
+    │   ├───fonts
+    │   ├───images
+    │   └───styles
+    ├───components
+    │   ├───analytics
+    │   │   ├───AchievementCard
+    │   │   ├───PlayHistory
+    │   │   └───StatsDisplay
+    │   ├───common
+    │   │   ├───Button
+    │   │   ├───Card
+    │   │   ├───Loading
+    │   │   └───Modal
+    │   ├───games
+    │   │   ├───GameCard
+    │   │   ├───GameFilters
+    │   │   ├───GameGrid
+    │   │   └───GamePlayer
+    │   ├───IsAnon
+    │   ├───IsPrivate
+    │   ├───layout
+    │   │   ├───Footer
+    │   │   ├───Navbar
+    │   │   └───Sidebar
+    │   ├───leaderboard
+    │   │   ├───GlobalRankings
+    │   │   ├───LeaderboardTable
+    │   │   └───RankingCard
+    │   ├───ratings
+    │   │   ├───RatingStarts
+    │   │   ├───ReviewForm
+    │   │   └───ReviewList
+    │   └───user
+    │       ├───FavoutitesList
+    │       ├───LoginForm
+    │       ├───SignupForm
+    │       └───UserProfile
+    ├───context
+    ├───hooks
+    ├───pages
+    │   ├───admin
+    │   ├───GameDetailPage
+    │   ├───GamesPage
+    │   ├───HomePage
+    │   ├───LandingPage
+    │   ├───LeaderboardPage
+    │   ├───LoginPage
+    │   ├───NotFoundPage
+    │   ├───ProfilePage
+    │   └───SignupPage
+    ├───routes
+    ├───services
+    └───utils
