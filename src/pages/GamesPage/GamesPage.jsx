@@ -1,25 +1,22 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import gameService from "../../services/game.service";
+import GameCardComponent from "../../components/games/GameCard/GameCard";
 
 import "./GamesPage.css";
 import {
   Box,
   Typography,
-  Card,
-  CardContent,
-  CardActionArea,
   CircularProgress,
   Button,
-  CardActions,
   Pagination,
   Select,
   MenuItem,
   FormControl,
   InputLabel,
   Paper,
-  Grid2
+  Grid2,
 } from "@mui/material";
 
 function GamesPage() {
@@ -30,6 +27,11 @@ function GamesPage() {
   const [sortOption, setSortOption] = useState("newest");
   const gamesPerPage = 6;
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    console.log("logout button clicked");
+    navigate("/logout");
+  };
 
   useEffect(() => {
     getGames();
@@ -78,10 +80,10 @@ function GamesPage() {
     }
   };
 
-  //pagination 
+  //pagination
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    window.scrollTo(0, 0); 
+    window.scrollTo(0, 0);
   };
 
   const handleSortChange = (event) => {
@@ -142,7 +144,7 @@ function GamesPage() {
         alignItems: "center",
       }}
     >
-      {/* Header with navigation and title */}
+      {/* Header */}
       <Box
         sx={{
           mb: 3,
@@ -153,6 +155,22 @@ function GamesPage() {
         <Typography variant="h4" component="h1">
           Games Library
         </Typography>
+        <Button
+          variant="outlined"
+          onClick={() => navigate("/home")}
+          id="back-to-home-button"
+          data-testid="back-to-home-button"
+          sx={{ mt: 1 }}
+        >
+          Back to Home
+        </Button>
+        <Button 
+        variant="contained" 
+        color="secondary" 
+        onClick={handleLogout}
+        >
+          Log Out
+        </Button>
       </Box>
 
       {/* Sort bar */}
@@ -220,61 +238,7 @@ function GamesPage() {
                 key={game._id || game.id}
                 sx={{ display: "flex", justifyContent: "center" }}
               >
-                <Card
-                  sx={{
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    maxWidth: "350px",
-                    transition: "transform 0.2s, box-shadow 0.2s",
-                    "&:hover": {
-                      transform: "translateY(-5px)",
-                      boxShadow: 4,
-                    },
-                  }}
-                  id={`game-card-${game._id || game.id}`}
-                  data-testid={`game-card-${game._id || game.id}`}
-                >
-                  <CardActionArea
-                    component={Link}
-                    to={`/games/${game._id || game.id}`}
-                    sx={{ flexGrow: 1 }}
-                  >
-                    <CardContent>
-                      <Typography variant="h6" component="h2" gutterBottom>
-                        {game.title}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {game.description
-                          ? game.description.substring(0, 50) + "..."
-                          : "No description available"}
-                      </Typography>
-                      <Box
-                        sx={{
-                          width: "100%",
-                          height: "100px",
-                          maxHeight: "200px",
-                          objectFit: "cover",
-                          backgroundColor: "pink",
-                        }}
-                      />
-                    </CardContent>
-                  </CardActionArea>
-                  <CardActions>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      component={Link}
-                      to={`/games/${game._id || game.id}`}
-                      fullWidth
-                      id={`view-details-button-${game._id || game.id}`}
-                      data-testid={`view-details-button-${game._id || game.id}`}
-                    >
-                      View Details
-                    </Button>
-                  </CardActions>
-                </Card>
+                <GameCardComponent game={game} />
               </Grid2>
             ))}
           </Grid2>
@@ -289,26 +253,18 @@ function GamesPage() {
               <Pagination
                 count={pageCount}
                 page={page}
-                onChange={handleChangePage}
-                color="primary"
+                color="secondary"
                 size="large"
+                variant="outlined"
                 showFirstButton
                 showLastButton
                 data-testid="games-pagination"
+                onChange={handleChangePage}
               />
             </Box>
           )}
         </>
       )}
-      <Button
-        variant="outlined"
-        onClick={() => navigate("/home")}
-        id="back-to-home-button"
-        data-testid="back-to-home-button"
-        sx={{ mt: 2 }}
-      >
-        Back to Home
-      </Button>
     </Box>
   );
 }
