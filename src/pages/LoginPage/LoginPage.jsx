@@ -1,8 +1,20 @@
+//Updated para matener consistency with the rest of the project (using material ui)
+
 import "./LoginPage.css";
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/Auth.context";
 import authService from "../../services/auth.service";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Container,
+  Paper,
+  Alert,
+  Stack,
+} from "@mui/material";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -20,53 +32,86 @@ function LoginPage() {
     e.preventDefault();
     const requestBody = { email, password };
 
-    // Send a request to the server using axios
-    /* 
-    axios.post(`${process.env.REACT_APP_SERVER_URL}/auth/login`)
-      .then((response) => {})
-    */
-
-    // Or using a service
     authService
       .login(requestBody)
       .then((response) => {
-        // If the POST request is successful store the authentication token,
-        // after the token is stored authenticate the user
-        // and at last navigate to the home page
         storeToken(response.data.authToken);
         authenticateUser();
-        navigate("/");
+        navigate("/home");
       })
       .catch((error) => {
-        // If the request resolves with an error, set the error message in the state
         const errorDescription = error.response.data.message;
         setErrorMessage(errorDescription);
       });
   };
 
   return (
-    <div className="LoginPage">
-      <h1>Login</h1>
+    <Container maxWidth="sm">
+      <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
+        <Typography variant="h4" component="h1" align="center" gutterBottom>
+          Login
+        </Typography>
 
-      <form onSubmit={handleLoginSubmit}>
-        <label>Email:</label>
-        <input type="email" name="email" value={email} onChange={handleEmail} />
+        <Box component="form" onSubmit={handleLoginSubmit} sx={{ mt: 2 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            variant="standard"
+            autoComplete="email"
+            autoFocus
+            value={email}
+            onChange={handleEmail}
+          />
 
-        <label>Password:</label>
-        <input
-          type="password"
-          name="password"
-          value={password}
-          onChange={handlePassword}
-        />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            variant="standard"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={handlePassword}
+          />
 
-        <button type="submit">Login</button>
-      </form>
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Login
+          </Button>
+        </Box>
 
-      <p>Don't have an account yet?</p>
-      <Link to={"/signup"}> Sign Up</Link>
-    </div>
+        {errorMessage && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {errorMessage}
+          </Alert>
+        )}
+
+        <Stack
+          direction="row"
+          spacing={1}
+          justifyContent="center"
+          sx={{ mt: 2 }}
+        >
+          <Typography variant="body2">Don't have an account yet?</Typography>
+          <Typography variant="body2">
+            <Link to="/signup" style={{ textDecoration: "none" }}>
+              Sign Up
+            </Link>
+          </Typography>
+        </Stack>
+      </Paper>
+    </Container>
   );
 }
 

@@ -8,6 +8,7 @@ import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import LandingPage from "../pages/LandingPage/LandingPage";
 import SignupPage from "../pages/SignupPage/SignupPage";
 import LoginPage from "../pages/LoginPage/LoginPage";
+import LogoutPage from "../pages/LogoutPage/LogoutPage";
 import HomePage from "../pages/HomePage/HomePage";
 import ProfilePage from "../pages/ProfilePage/ProfilePage"
 import GamesPage from "../pages/GamesPage/GamesPage";
@@ -51,6 +52,12 @@ const router = createBrowserRouter([
           <IsAnon>
             <LoginPage />
           </IsAnon>
+        ),
+      },
+      {
+        path: "logout",
+        element: (
+            <LogoutPage />
         ),
       },
       {
@@ -98,7 +105,7 @@ const router = createBrowserRouter([
         element: <NotFoundPage />,
       },
 
-      adminRoutes
+      adminRoutes,
     ],
   },
 ]);

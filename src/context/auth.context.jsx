@@ -13,13 +13,16 @@ function AuthProviderWrapper(props) {
   };
 
   const authenticateUser = () => {
+    console.log("authenticateUser called");
+
     // Get the stored token from the localStorage
     const storedToken = localStorage.getItem("authToken");
 
     // If the token exists in the localStorage
     if (storedToken) {
-      // Send a request to the server using axios
-      /* 
+      console.log("Token found, verifying...");
+
+      /* Send a request to the server using axios
         axios.get(
           `${process.env.REACT_APP_SERVER_URL}/auth/verify`,
           { headers: { Authorization: `Bearer ${storedToken}` } }
@@ -27,12 +30,13 @@ function AuthProviderWrapper(props) {
         .then((response) => {})
         */
 
-      // Or using a service
+      // Or using a service send a request to the server
       authService
         .verify()
         .then((response) => {
           // If the server verifies that JWT token is valid  ✅
           const user = response.data;
+
           // Update state variables
           setIsLoggedIn(true);
           setIsLoading(false);
@@ -60,12 +64,12 @@ function AuthProviderWrapper(props) {
   const logOutUser = () => {
     // Upon logout, remove the token from the localStorage
     removeToken();
-    authenticateUser();
+    setIsLoggedIn(false);
+    setUser(null);
   };
 
   useEffect(() => {
     // Run this code once the AuthProviderWrapper component in the App loads for the first time.
-    // This effect runs when the application and the AuthProviderWrapper component load for the first time.
     authenticateUser();
   }, []);
 
