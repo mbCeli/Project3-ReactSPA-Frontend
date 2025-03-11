@@ -50,4 +50,4 @@ class ExampleService {
 // Create one instance of the service
 const exampleService = new ExampleService();
 
-export default exampleService;
+export default exampleService

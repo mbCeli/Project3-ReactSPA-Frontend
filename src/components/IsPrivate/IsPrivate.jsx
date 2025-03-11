@@ -3,7 +3,7 @@ import { AuthContext } from "../../context/Auth.context";
 import { Navigate } from "react-router-dom";
 import Loading from "../common/Loading/Loading";
 
-function IsPrivate({ children }) {
+function IsPrivate({ children, adminOnly }) {
   const { isLoggedIn, isLoading, user } = useContext(AuthContext);
 
   // If the authentication is still loading ⏳

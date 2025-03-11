@@ -1,8 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import Root from "./component/layout/Root"
-import IsPrivate from "./components/IsPrivate/IsPrivate";
-import IsAnon from "./components/IsAnon/IsAnon";
+import Root from "../components/layout/Root/Root";
+import IsPrivate from "../components/IsPrivate/IsPrivate";
+import IsAnon from "../components/IsAnon/IsAnon";
 
 import NotFoundPage from "../pages/NotFoundPage/NotFoundPage";
 import LandingPage from "../pages/LandingPage/LandingPage";

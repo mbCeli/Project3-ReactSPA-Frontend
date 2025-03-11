@@ -14,9 +14,7 @@ function App() {
     <div className="App">
       <AuthProviderWrapper>
         <ThemeProviderWrapper>
-          <LanguageProviderWrapper>
             <RouterProvider router={router} />
-          </LanguageProviderWrapper>
         </ThemeProviderWrapper>
       </AuthProviderWrapper>
     </div>

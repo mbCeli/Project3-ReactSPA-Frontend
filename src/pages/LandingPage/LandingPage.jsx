@@ -2,20 +2,12 @@ import "./LandingPage.css";
 
 import { Box } from "@mui/material";
 
-import { motion } from "framer-motion";
-
-export default function LandingPage() {
+function LandingPage() {
   return (
-    <Box
-      sx={{
-        width: "100vw",
-        height: "100vh",
-        overflow: "hidden",
-        position: "relative",
-        backgroundColor: "lightgrey",
-      }}
-    >
-
+    <Box>
+      <h1>Landing page</h1>
     </Box>
   );
 }
+
+export default LandingPage;

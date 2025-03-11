@@ -1,13 +1,10 @@
-import { createBrowserRouter } from "react-router-dom";
+import IsPrivate from "../components/IsPrivate/IsPrivate";
 
-import IsPrivate from "./components/IsPrivate/IsPrivate";
+import DashboardPage from "../pages/admin/DashboardPage/DashboardPage";
+import GameManagementPage from "../pages/admin/GameManagementPage/GameManagementPage";
+import UserManagementPage from "../pages/admin/UserManagementPage/UserManagementPage";
 
-import DashboardPage from "./pages/admin/DashboardPage";
-import GameManagementPage from "./pages/admin/GameManagementPage";
-import UserManagementPage from "./pages/admin/UserManagementPage";
-
-const adminRoutes = createBrowserRouter([
-  {
+const adminRoutes = {
     path: "admin",
     children: [
       {
@@ -35,8 +32,7 @@ const adminRoutes = createBrowserRouter([
         ),
       },
     ],
-  },
-]);
+  };
 
-export default adminRoutes; 
+export { adminRoutes }; 
 
