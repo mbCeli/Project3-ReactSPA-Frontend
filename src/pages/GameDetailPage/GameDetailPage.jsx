@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { AuthContext } from "../../context/Auth.context";
+import { AuthContext } from "../../context/AuthContext";
 import gameService from "../../services/game.service";
 import userService from "../../services/user.service";
 

@@ -3,7 +3,7 @@ import "./NotFoundPage.css";
 import { Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../../context/Auth.context";
+import { AuthContext } from "../../context/AuthContext";
 
 
 function NotFoundPage() {

@@ -18,7 +18,7 @@ import LeaderboardPage from "../pages/LeaderboardPage/LeaderboardPage";
 import { adminRoutes } from "./AdminRoutes";
 
 /* 
-//NOT NEEDED BEACUSE OF THE Auth.context.jsx
+//NOT NEEDED BEACUSE OF THE AuthContext.jsx
 //to check que is authenticated by getting the token from the localStorage
 const checkAuthLoader = () => {
     const token = localStorage.getItem("token");

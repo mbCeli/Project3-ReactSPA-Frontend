@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 
-import { AuthContext } from "../../context/Auth.context";
+import { AuthContext } from "../../context/AuthContext";
 
 import "./LogoutPage.css";
 import { Box, Typography, Button, Stack } from "@mui/material";
