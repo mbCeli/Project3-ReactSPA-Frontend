@@ -12,7 +12,6 @@ import {
   CircularProgress,
   Rating as MuiRating,
   IconButton,
-  Divider,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import EditIcon from "@mui/icons-material/Edit";

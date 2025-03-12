@@ -4,9 +4,7 @@ import "./GameCard.css";
 import {
   Card,
   CardContent,
-  CardActions,
   Typography,
-  Button,
   CardActionArea,
   Box,
 } from "@mui/material";
