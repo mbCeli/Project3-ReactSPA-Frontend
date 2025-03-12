@@ -15,8 +15,8 @@ function GameCardComponent({ game }) {
   return (
     <Card
       sx={{
-        width: "100%",
-        height: "100%",
+        width: "300px",
+        height: "200px",
         display: "flex",
         flexDirection: "column",
         maxWidth: "350px",
@@ -37,15 +37,15 @@ function GameCardComponent({ game }) {
           <Typography variant="h6" component="h2" gutterBottom>
             {game.title}
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2, fontSize:"0.6rem" }}>
             {game.description
-              ? game.description.substring(0, 75) + "..."
+              ? game.description.substring(0, 50) + "..."
               : "No description available"}
           </Typography>
 
           <Box
             sx={{
-              width: "100%",
+              width: "270px",
               height: "100px",
               backgroundColor: "lightgrey",
               borderRadius: 1,
@@ -59,19 +59,7 @@ function GameCardComponent({ game }) {
             </Typography>
           </Box>
         </CardContent>
-      </CardActionArea>
-      <CardActions>
-        <Button
-          size="small"
-          variant="contained"
-          component={Link}
-          to={`/games/${game._id || game.id}`}
-          fullWidth
-          id={`view-details-button-of-${game.title}`}
-        >
-          View Details
-        </Button>
-      </CardActions>
+      </CardActionArea> 
     </Card>
   );
 }

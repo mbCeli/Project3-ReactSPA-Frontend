@@ -148,63 +148,60 @@ function GamesPage() {
       <Box
         sx={{
           mb: 3,
-          width: "100%",
-          maxWidth: "1200px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 2,
         }}
       >
-        <Typography variant="h4" component="h1">
-          Games Library
-        </Typography>
         <Button
           variant="outlined"
           onClick={() => navigate("/home")}
           id="back-to-home-button"
           data-testid="back-to-home-button"
-          sx={{ mt: 1 }}
+          size="medium"
         >
           Back to Home
         </Button>
-        <Button 
-        variant="contained" 
-        color="secondary" 
-        onClick={handleLogout}
+
+        <Typography variant="h3" component="h1">
+          Games Library
+        </Typography>
+
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleLogout}
+          size="medium"
         >
           Log Out
         </Button>
       </Box>
 
       {/* Sort bar */}
-      <Paper
-        elevation={1}
-        sx={{
-          p: 2,
-          mb: 3,
-          width: "100%",
-          maxWidth: "1200px",
-          display: "flex",
-          justifyContent: "flex-end",
-          backgroundColor: "pink",
-        }}
-        id="sort-container"
-        data-testid="sort-container"
+      <FormControl
+        variant="standard"
+        sx={{ minWidth: 120, height: "35px", marginLeft:"55%", mb:3 }}
       >
-        <FormControl size="small" sx={{ minWidth: 200 }}>
-          <InputLabel id="sort-select-label">Sort By</InputLabel>
-          <Select
-            labelId="sort-select-label"
-            id="sort-select"
-            value={sortOption}
-            label="Sort By"
-            onChange={handleSortChange}
-            data-testid="sort-dropdown"
-          >
-            <MenuItem value="newest">Newest First</MenuItem>
-            <MenuItem value="oldest">Oldest First</MenuItem>
-            <MenuItem value="nameAsc">Name (A-Z)</MenuItem>
-            <MenuItem value="nameDesc">Name (Z-A)</MenuItem>
-          </Select>
-        </FormControl>
-      </Paper>
+        <InputLabel>
+          Sort By
+        </InputLabel>
+        <Select
+          labelId="sort-select-label"
+          id="sort-select"
+          value={sortOption}
+          label="Sort By"
+          onChange={handleSortChange}
+          data-testid="sort-dropdown"
+          size="small"
+        >
+          <MenuItem value="newest">Newest First</MenuItem>
+          <MenuItem value="oldest">Oldest First</MenuItem>
+          <MenuItem value="nameAsc">Name (A-Z)</MenuItem>
+          <MenuItem value="nameDesc">Name (Z-A)</MenuItem>
+        </Select>
+      </FormControl>
 
       {/* Game cards */}
       {games.length === 0 ? (
@@ -246,7 +243,7 @@ function GamesPage() {
           {/* Pagination */}
           {pageCount > 1 && (
             <Box
-              sx={{ mt: 4, mb: 2, display: "flex", justifyContent: "center" }}
+              sx={{ mt: 4, mb: 1, display: "flex", justifyContent: "center" }}
               id="pagination-container"
               data-testid="pagination-container"
             >

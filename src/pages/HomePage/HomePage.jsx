@@ -65,218 +65,252 @@ function HomePage() {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h2" sx={{ mb: 4 }}>
-        Home page
-      </Typography>
+    <Box
+      sx={{
+        py: 3,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <Box sx={{ width: "100%", maxWidth: "1200px" }}>
+        <Typography variant="h3" sx={{ mb: 3 }}>
+          Home
+        </Typography>
 
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          mb: 4,
-        }}
-      >
-        {isLoggedIn && user ? (
-          <>
-            <Typography variant="h4" sx={{ margin: "10px" }}>
-              Welcome {user.username}
-            </Typography>
-            <Typography variant="h5" sx={{ margin: "10px" }}>
-              {user.isAdmin ? "You have admin privileges" : ""}
-            </Typography>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleLogout}
-            >
-              Log Out
-            </Button>
-          </>
-        ) : (
-          <>
-            <Typography variant="h4">You are not logged in</Typography>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => navigate("/login")}
-            >
-              Log In
-            </Button>
-          </>
-        )}
-      </Box>
-
-      {isLoggedIn && (
         <Box
           sx={{
-            mt: 4,
-            height: "calc(100vh - 250px)",
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
-            justifyContent: "space-evenly",
+            justifyContent: "space-between",
+            mb: 3,
+            flexWrap: "wrap",
+            gap: 1,
           }}
         >
-          <Grid2 container spacing={4} sx={{ flexGrow: 1 }}>
-            {/* Game Library Card */}
-            <Grid2 item xs={12} md={6} sx={{ display: "flex" }}>
-              <Card
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  boxShadow: 3,
-                  borderRadius: 2,
-                  transition: "transform 0.3s, box-shadow 0.3s",
-                  "&:hover": {
-                    transform: "translateY(-8px)",
-                    boxShadow: 6,
-                  },
-                }}
+          {isLoggedIn && user ? (
+            <>
+              <Box>
+                <Typography variant="h5" sx={{ mb: 0.5 }}>
+                  Welcome {user.username}
+                </Typography>
+                {user.isAdmin && (
+                  <Typography variant="subtitle1" color="text.secondary">
+                    You have admin privileges
+                  </Typography>
+                )}
+              </Box>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleLogout}
+                size="medium"
               >
-                <CardContent
+                Log Out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Typography variant="h5">You are not logged in</Typography>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => navigate("/login")}
+                size="medium"
+              >
+                Log In
+              </Button>
+            </>
+          )}
+        </Box>
+
+        {isLoggedIn && (
+          <Box
+            sx={{
+              mt: 3,
+              display: "flex",
+              justifyContent: "center",
+              alignContent: "center",
+              width: "100%",
+            }}
+          >
+            <Grid2 container spacing={3} sx={{ maxWidth: "1200px" }}>
+              {/* Game Library Card */}
+              <Grid2
+                item
+                xs={12}
+                md={6}
+                sx={{ display: "flex", height: "500px" }}
+              >
+                <Card
                   sx={{
-                    flexGrow: 1,
+                    width: "100%",
+                    height: "500px",
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    p: 5,
+                    boxShadow: 2,
+                    borderRadius: 2,
+                    transition: "transform 0.3s, box-shadow 0.3s",
+                    "&:hover": {
+                      transform: "translateY(-5px)",
+                      boxShadow: 4,
+                    },
                   }}
                 >
-                  <Typography
-                    variant="h4"
-                    component="h2"
-                    gutterBottom
-                    align="center"
-                    sx={{ fontWeight: "bold", mb: 3 }}
-                  >
-                    Game Library
-                  </Typography>
-                  <Typography variant="h6" align="center" sx={{ mb: 4 }}>
-                    Explore our collection of games and find your next favorite!
-                  </Typography>
-                  <Box
-                    variant="img"
+                  <CardContent
                     sx={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      backgroundColor: "lightgrey",
+                      flexGrow: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      p: 4,
                     }}
-                  />
-                </CardContent>
-                <CardActions sx={{ p: 3, pt: 0 }}>
-                  <Button
-                    variant="contained"
-                    component={Link}
-                    to="/games"
-                    fullWidth
-                    size="large"
-                    sx={{ py: 1.5, fontSize: "1.1rem" }}
                   >
-                    Browse Games
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid2>
-
-            {/* Last Played Game Card */}
-            <Grid2 item xs={12} md={6} sx={{ display: "flex" }}>
-              <Card
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  boxShadow: 3,
-                  borderRadius: 2,
-                  transition: "transform 0.3s, box-shadow 0.3s",
-                  "&:hover": {
-                    transform: "translateY(-8px)",
-                    boxShadow: 6,
-                  },
-                }}
-              >
-                <CardContent
-                  sx={{
-                    flexGrow: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    p: 5,
-                  }}
-                >
-                  <Typography
-                    variant="h4"
-                    component="h2"
-                    gutterBottom
-                    align="center"
-                    sx={{ fontWeight: "bold", mb: 3 }}
-                  >
-                    Last Played Game
-                  </Typography>
-
-                  {isLoading ? (
+                    <Typography
+                      variant="h5"
+                      component="h2"
+                      gutterBottom
+                      align="center"
+                      sx={{ fontWeight: "bold", mb: 2 }}
+                    >
+                      Game Library
+                    </Typography>
+                    <Typography variant="body1" align="center" sx={{ mb: 3 }}>
+                      Explore our collection of games and find your next
+                      favorite!
+                    </Typography>
                     <Box
-                      sx={{ display: "flex", justifyContent: "center", py: 4 }}
-                    >
-                      <CircularProgress size={40} />
-                    </Box>
-                  ) : lastPlayedGame ? (
-                    <Typography variant="h6" align="center" sx={{ mb: 4 }}>
-                      Continue playing <strong>{lastPlayedGame.title}</strong>
-                    </Typography>
-                  ) : (
-                    <Typography variant="h6" align="center" sx={{ mb: 4 }}>
-                      You haven't played any games yet. Check out our game
-                      library!
-                    </Typography>
-                  )}
-                  <Box
-                    variant="img"
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      backgroundColor: "black",
-                    }}
-                  />
-                </CardContent>
-                <CardActions sx={{ p: 3, pt: 0 }}>
-                  {lastPlayedGame ? (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      component={Link}
-                      to={`/games/${lastPlayedGame._id}`}
-                      fullWidth
-                      size="large"
-                      sx={{ py: 1.5, fontSize: "1.1rem" }}
-                    >
-                      Resume Game
-                    </Button>
-                  ) : (
+                      variant="img"
+                      sx={{
+                        width: "100%",
+                        height: "200px",
+                        objectFit: "cover",
+                        backgroundColor: "lightgrey",
+                        borderRadius: 1,
+                      }}
+                    />
+                  </CardContent>
+                  <CardActions sx={{ p: 2, pt: 0 }}>
                     <Button
                       variant="contained"
                       component={Link}
                       to="/games"
                       fullWidth
-                      disabled={isLoading}
-                      size="large"
-                      sx={{ py: 1.5, fontSize: "1.1rem" }}
+                      size="medium"
+                      sx={{ py: 1 }}
                     >
-                      Find Games
+                      Browse Games
                     </Button>
-                  )}
-                </CardActions>
-              </Card>
+                  </CardActions>
+                </Card>
+              </Grid2>
+
+              {/* Last Played Game Card */}
+              <Grid2
+                item
+                xs={12}
+                md={6}
+                sx={{ display: "flex", height: "500px" }}
+              >
+                <Card
+                  sx={{
+                    width: "100%",
+                    height: "500px",
+                    display: "flex",
+                    flexDirection: "column",
+                    boxShadow: 2,
+                    borderRadius: 2,
+                    transition: "transform 0.3s, box-shadow 0.3s",
+                    "&:hover": {
+                      transform: "translateY(-5px)",
+                      boxShadow: 4,
+                    },
+                  }}
+                >
+                  <CardContent
+                    sx={{
+                      flexGrow: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      p: 4,
+                    }}
+                  >
+                    <Typography
+                      variant="h5"
+                      component="h2"
+                      gutterBottom
+                      align="center"
+                      sx={{ fontWeight: "bold", mb: 2 }}
+                    >
+                      Last Played Game
+                    </Typography>
+
+                    {isLoading ? (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          py: 2,
+                        }}
+                      >
+                        <CircularProgress size={32} />
+                      </Box>
+                    ) : lastPlayedGame ? (
+                      <Typography variant="body1" align="center" sx={{ mb: 3 }}>
+                        Continue playing <strong>{lastPlayedGame.title}</strong>
+                      </Typography>
+                    ) : (
+                      <Typography variant="body1" align="center" sx={{ mb: 3 }}>
+                        You haven't played any games yet! What are you waiting for?
+                      </Typography>
+                    )}
+                    <Box
+                      variant="img"
+                      sx={{
+                        width: "100%",
+                        height: "200px",
+                        objectFit: "cover",
+                        backgroundColor: "black",
+                        borderRadius: 1,
+                      }}
+                    />
+                  </CardContent>
+                  <CardActions sx={{ p: 2, pt: 0 }}>
+                    {lastPlayedGame ? (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        component={Link}
+                        to={`/games/${lastPlayedGame._id}`}
+                        fullWidth
+                        size="medium"
+                        sx={{ py: 1 }}
+                      >
+                        Resume Game
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        component={Link}
+                        to="/games"
+                        fullWidth
+                        disabled={isLoading}
+                        size="medium"
+                        sx={{ py: 1 }}
+                      >
+                        Find Games
+                      </Button>
+                    )}
+                  </CardActions>
+                </Card>
+              </Grid2>
             </Grid2>
-          </Grid2>
-        </Box>
-      )}
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 }

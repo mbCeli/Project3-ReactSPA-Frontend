@@ -4,6 +4,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import gameService from "../../services/game.service";
 import userService from "../../services/user.service";
+import GameStats from "../../components/games/GameStats/GameStats";
+import CommentsSection from "../../components/ratings/RatingStats/CommentsRatings";
 
 import "./GameDetailPage.css";
 import {
@@ -14,23 +16,23 @@ import {
   Card,
   CardContent,
   IconButton,
-  Grid2,
   Paper,
   Link,
   Avatar,
+  Snackbar,
+  Alert,
 } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import CloseIcon from "@mui/icons-material/Close";
-import GitHubIcon from "@mui/icons-material/GitHub";
-
-// We'll use Material UI's own animation capabilities instead of framer-motion
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 function GameDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user, isLoggedIn } = useContext(AuthContext);
 
   const [game, setGame] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,10 +41,13 @@ function GameDetailPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [gameUrl, setGameUrl] = useState("");
   const [isFrameLoading, setIsFrameLoading] = useState(true);
+  const [isAnimating, setIsAnimating] = useState(false); // Animation state for favorite
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const iframeRef = useRef(null);
-
-  // Animation state for heart
-  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     const fetchGameDetails = async () => {
@@ -73,7 +78,7 @@ function GameDetailPage() {
   const handlePlayGame = async () => {
     try {
       // Log play session
-      await gameService.postPlaySession(id, { userId: user._id });
+      await gameService.postPlaySession(id, { userId: user?._id });
 
       // Reset iframe loading state
       setIsFrameLoading(true);
@@ -138,90 +143,198 @@ function GameDetailPage() {
     }
   };
 
+  const handleGameUpdate = (updatedGame) => {
+    setGame(updatedGame);
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
   if (isLoading) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <CircularProgress />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "calc(100vh - 64px)", // Adjust based on your header height
+          width: "100%",
+        }}
+      >
+        <CircularProgress size={40} />
       </Box>
     );
   }
 
-  if (error) {
+  if (error || !game) {
     return (
-      <Box sx={{ mt: 4, p: 2 }}>
-        <Typography variant="h5" color="error">
-          {error}
-        </Typography>
-      </Box>
-    );
-  }
-
-  if (!game) {
-    return (
-      <Box sx={{ mt: 4, p: 2 }}>
-        <Typography variant="h5">Game not found</Typography>
-        <Button
-          variant="contained"
-          onClick={() => navigate("/games")}
-          sx={{ mt: 2 }}
-        >
-          Back to Games
-        </Button>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          height: "calc(100vh - 10px)",
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
+        <Box sx={{ maxWidth: "800px", width: "100%", textAlign: "center" }}>
+          <Typography variant="h5" color="error">
+            {error || "Game not found"}
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={() => navigate("/games")}
+            sx={{ mt: 2 }}
+          >
+            Back to Games
+          </Button>
+        </Box>
       </Box>
     );
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box
+      sx={{
+        height: "calc(100vh - 10px)",
+        width: "100%",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        px: { xs: 2, md: 4 },
+        py: 1,
+      }}
+    >
+      {/* header */}
       <Box
         sx={{
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
-          mb: 3,
+          mb: 1,
+          width: "100%",
+          position: "relative",
         }}
       >
-        <Box sx={{ textAlign: "center" }}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            {game.title}
-          </Typography>
-          <Typography>Game by {game.creator}</Typography>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", mt: 1 }}>
-            <Avatar sx={{ backgroundColor: "pink" }}>
-              <GitHubIcon />
-            </Avatar>
-            <Link href={game.creatorGithub} sx={{ pl: 1}}>{game.creator}'s Github Profile</Link>
-          </Box>
-        </Box>
-
         <Button
           variant="outlined"
+          size="small"
           onClick={() => navigate("/games")}
-          sx={{ marginLeft: "10px" }}
+          sx={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            fontSize: "0.7rem",
+            py: 0.5,
+            px: 1,
+          }}
         >
+          <ArrowBackIcon size="small" />
           Back to Games
         </Button>
+
+        {/* Title with favorite button */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Typography variant="h5" component="h1">
+            {game.title}
+          </Typography>
+          <IconButton
+            onClick={handleToggleFavorite}
+            color="error"
+            size="small"
+            className={
+              isAnimating
+                ? isFavorite
+                  ? "heart-animation-grow"
+                  : "heart-animation-shrink"
+                : ""
+            }
+            sx={{
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.1)",
+              },
+            }}
+          >
+            {isFavorite ? (
+              <FavoriteIcon
+                className={isAnimating ? "heart-fill-animation" : ""}
+              />
+            ) : (
+              <FavoriteBorderIcon />
+            )}
+          </IconButton>
+        </Box>
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1}}>
+          <Typography variant="subtitle1">Game by {game.creator}</Typography>
+          <Avatar sx={{ backgroundColor: "#f0f0f0", width: 20, height: 20, ml:2 }}>
+            <GitHubIcon
+              sx={{ color: "#333", fontSize: 12, width: 20, height: 20 }}
+            />
+          </Avatar>
+          <Link
+            href={game.creatorGithub}
+            target="_blank"
+            sx={{
+              textDecoration: "none",
+              color: "#333",
+              fontSize: "0.8rem",
+            }}
+          >
+            Github Profile
+          </Link>
+        </Box>
       </Box>
 
-      <Grid2 container spacing={3}>
-        {/* Main content area - takes more space */}
-        <Grid2 item xs={12} md={9}>
-          {isPlaying ? (
-            <Box sx={{ mb: 3, position: "relative" }}>
+      {/* Main */}
+      <Box sx={{ display: "flex", flexGrow: 1, width: "100%", gap: 2 }}>
+        {/* Game */}
+        <Box
+          sx={{
+            width: { xs: "100%", md: "75%" },
+            height: "100%",
+            display: { xs: "block", md: "block" },
+          }}
+        >
+          <Box
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: isPlaying ? "flex-start" : "center",
+              alignItems: "center",
+            }}
+          >
+            {isPlaying ? (
               <Paper
                 elevation={3}
-                className="game-iframe-container"
                 sx={{
-                  width: "1600px",
-                  height: "700px",
-                  overflow: "hidden",
+                  width: "100%",
+                  height: "100%",
                   position: "relative",
-                  mb: 2,
                   borderRadius: 2,
+                  overflow: "hidden",
+                  transition: "all 0.3s ease-in-out",
                 }}
               >
                 {isFrameLoading && (
-                  <Box className="game-loading">
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: "rgba(255, 255, 255, 0.8)",
+                      zIndex: 2,
+                    }}
+                  >
                     <CircularProgress />
                     <Typography variant="body1" sx={{ ml: 2 }}>
                       Loading game...
@@ -231,8 +344,16 @@ function GameDetailPage() {
 
                 <IconButton
                   onClick={toggleFullscreen}
-                  className="fullscreen-button"
-                  sx={{ position: "absolute", top: 0, right: 800 }}
+                  sx={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    zIndex: 3,
+                    backgroundColor: "rgba(255, 255, 255, 0.7)",
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    },
+                  }}
                 >
                   <FullscreenIcon />
                 </IconButton>
@@ -241,7 +362,12 @@ function GameDetailPage() {
                   variant="contained"
                   color="secondary"
                   onClick={handleCloseGame}
-                  sx={{ position: "absolute", top: 0, right: 0 }}
+                  sx={{
+                    position: "absolute",
+                    bottom: 8,
+                    right: 8,
+                    zIndex: 3,
+                  }}
                 >
                   <CloseIcon />
                 </Button>
@@ -257,111 +383,102 @@ function GameDetailPage() {
                   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   onLoad={handleIframeLoad}
-                  className="game-iframe"
                 ></iframe>
               </Paper>
-            </Box>
-          ) : (
-            <Card sx={{ mb: 3, width: "1600px" }}>
-              <CardContent>
-                <Typography variant="body1">
-                  {game.description || "No description available"}
-                </Typography>
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    mt: 3,
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handlePlayGame}
-                    size="large"
-                    sx={{ minWidth: 200 }}
-                  >
-                    Play Game
-                  </Button>
-                </Box>
-              </CardContent>
-            </Card>
-          )}
-        </Grid2>
-
-        {/* Sidebar for game stats - takes less space */}
-        <Grid2 item xs={12} md={3} sx={{ marginLeft: "50px" }}>
-          <Card sx={{ mb: 2 }}>
-            <CardContent sx={{ textAlign: "center" }}>
-              <Box
+            ) : (
+              <Card
                 sx={{
+                  width: "80%",
+                  maxWidth: "600px",
+                  maxHeight: "400px",
+                  borderRadius: 2,
                   display: "flex",
-                  justifyContent: "center",
-                  mb: 2,
+                  flexDirection: "column",
+                  transition: "all 0.3s ease-in-out",
+                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
                 }}
               >
-                <IconButton
-                  onClick={handleToggleFavorite}
-                  color="error"
-                  size="large"
-                  className={
-                    isAnimating
-                      ? isFavorite
-                        ? "heart-animation-grow"
-                        : "heart-animation-shrink"
-                      : ""
-                  }
-                  sx={{
-                    transition: "transform 0.3s ease",
-                    "&:hover": {
-                      transform: "scale(1.1)",
-                    },
-                  }}
+                <CardContent
+                  sx={{ display: "flex", flexDirection: "column", p: 3 }}
                 >
-                  {isFavorite ? (
-                    <FavoriteIcon
-                      fontSize="large"
-                      className={isAnimating ? "heart-fill-animation" : ""}
-                    />
-                  ) : (
-                    <FavoriteBorderIcon fontSize="large" />
-                  )}
-                </IconButton>
-              </Box>
-              <Typography variant="body2" color="text.secondary">
-                {isFavorite ? "Remove from favorites" : "Add to favorites"}
-              </Typography>
-            </CardContent>
-          </Card>
+                  <Typography variant="body1" sx={{ mb: 3 }}>
+                    {game.description || "No description available"}
+                  </Typography>
 
-          <Card sx={{ mb: 2 }}>
-            <CardContent>
-              <Typography variant="subtitle1" gutterBottom>
-                Your Best Score
-              </Typography>
-              <Typography variant="h5" color="primary">
-                {user?.gameStats?.[id]?.bestScore || "-"}
-              </Typography>
-            </CardContent>
-          </Card>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      mt: 2,
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handlePlayGame}
+                      size="large"
+                      sx={{ minWidth: 200, py: 1.5 }}
+                    >
+                      Play Game
+                    </Button>
+                  </Box>
+                </CardContent>
+              </Card>
+            )}
+          </Box>
+        </Box>
 
-          <Card>
-            <CardContent>
-              <Typography variant="subtitle1" gutterBottom>
-                Global Rating
-              </Typography>
-              <Typography variant="h5" color="primary">
-                {game.rating?.averageScore?.toFixed(1) || "0"}/5
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                ({game.rating?.totalRatings || 0} ratings)
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid2>
-      </Grid2>
+        {/* Stats and Comments */}
+        <Box
+          sx={{
+            width: { xs: "100%", md: "25%" },
+            height: "100%",
+            display: { xs: "none", md: "block" },
+          }}
+        >
+          <Box
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              overflow: "hidden",
+            }}
+          >
+            {/* Game Stats */}
+            <Box sx={{ mb: 2, flexShrink: 0 }}>
+              <GameStats game={game} user={user} />
+            </Box>
+
+            {/* Comments y Ratings */}
+            <Box sx={{ flexGrow: 1, overflow: "hidden" }}>
+              <CommentsSection
+                gameId={id}
+                user={user}
+                isLoggedIn={isLoggedIn}
+                onGameUpdate={handleGameUpdate}
+              />
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
