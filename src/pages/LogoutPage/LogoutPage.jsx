@@ -44,11 +44,32 @@ function LogoutPage() {
           variant="contained"
           sx={{ width: "200px", height: "50px", fontSize: "20px" }}
           onClick={() => {
-            console.log("log back in button clicked");
             navigate("/login");
           }}
         >
           Log back in
+        </Button>
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Typography variant="h4" sx={{ margin: "30px 0 10px 0" }}>
+        If not
+        </Typography>
+        <Button
+          variant="standard"
+          sx={{ width: "200px", height: "50px", fontSize: "20px" }}
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          Return to the main page
         </Button>
       </Box>
     </Box>
