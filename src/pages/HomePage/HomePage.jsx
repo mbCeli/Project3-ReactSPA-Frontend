@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../../context/AuthContext";
 import gameService from "../../services/game.service";
-import userService from "../../services/user.service";
+import analyticsService from "../../services/analytics.service"; // Use analytics service instead
 
 import "./HomePage.css";
 import {
@@ -15,7 +15,10 @@ import {
   CardActions,
   Grid2,
   CircularProgress,
+  Avatar,
 } from "@mui/material";
+import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 function HomePage() {
   const { isLoggedIn, user } = useContext(AuthContext);
@@ -29,13 +32,15 @@ function HomePage() {
       if (isLoggedIn && user) {
         try {
           setIsLoading(true);
-          //necesito get the play history para saber cual es the last game played
-          const historyResponse = await userService.getPlayHistory();
+          // Use analyticsService instead of userService for getting play history
+          const historyResponse = await analyticsService.getUserPlayHistory();
 
           if (historyResponse.data && historyResponse.data.length > 0) {
             // Sort by date and get the most recent
             const sortedHistory = [...historyResponse.data].sort(
-              (a, b) => new Date(b.playedAt) - new Date(a.playedAt)
+              (a, b) =>
+                new Date(b.playedAt || b.playDate) -
+                new Date(a.playedAt || a.playDate)
             );
 
             if (sortedHistory[0] && sortedHistory[0].gameId) {
@@ -67,7 +72,7 @@ function HomePage() {
   return (
     <Box
       sx={{
-        py: 3,
+        py: 1,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -90,16 +95,76 @@ function HomePage() {
         >
           {isLoggedIn && user ? (
             <>
-              <Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 3,
+                }}
+              >
                 <Typography variant="h5" sx={{ mb: 0.5 }}>
-                  Welcome {user.username}
+                  Welcome{" "}
+                  <span style={{ color: "orange" }}>{user.username}</span>
                 </Typography>
-                {user.isAdmin && (
-                  <Typography variant="subtitle1" color="text.secondary">
-                    You have admin privileges
-                  </Typography>
+                {user.isAdmin ? (
+                  <>
+                    <Typography variant="subtitle1" color="text.secondary">
+                      You have admin privileges
+                    </Typography>
+                    <Box>
+                      <Button
+                        onClick={() => navigate("/profile")}
+                        sx={{ textAlign: "center" }}
+                      >
+                        <AccountCircleIcon
+                          sx={{
+                            color: "orange",
+                            fontSize: "2rem",
+                            boxShadow: "0 0 5px orange",
+                          }}
+                        />
+                      </Button>
+                      <Typography sx={{ fontSize: "0.8rem", color: "orange" }}>
+                        Your Profile
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Button onClick={() => navigate("/admin/dashboard")}>
+                        <DashboardCustomizeIcon
+                          sx={{
+                            color: "orange",
+                            fontSize: "2rem",
+                            boxShadow: "0 0 5px orange",
+                          }}
+                        />
+                      </Button>
+                      <Typography sx={{ fontSize: "0.8rem", color: "orange" }}>
+                        Admin Dashboard
+                      </Typography>
+                    </Box>
+                  </>
+                ) : (
+                  <Box>
+                    <Button
+                      onClick={() => navigate("/profile")}
+                      sx={{ textAlign: "center" }}
+                    >
+                      <AccountCircleIcon
+                        sx={{
+                          color: "orange",
+                          fontSize: "2rem",
+                          boxShadow: "0 0 5px orange",
+                        }}
+                      />
+                    </Button>
+                    <Typography sx={{ fontSize: "0.8rem", color: "orange" }}>
+                      Your Profile
+                    </Typography>
+                  </Box>
                 )}
               </Box>
+
               <Button
                 variant="contained"
                 color="secondary"
@@ -264,7 +329,8 @@ function HomePage() {
                       </Typography>
                     ) : (
                       <Typography variant="body1" align="center" sx={{ mb: 3 }}>
-                        You haven't played any games yet! What are you waiting for?
+                        You haven't played any games yet! What are you waiting
+                        for?
                       </Typography>
                     )}
                     <Box

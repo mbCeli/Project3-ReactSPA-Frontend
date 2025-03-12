@@ -15,20 +15,35 @@ class UserService {
   };
 
   getPlayHistory = (userId) => {
-    return api.get(`/api/users/${userId || ""}/history`);
+    // Fix the double slash issue
+    if (!userId) {
+      return api.get(`/api/users/history`);
+    }
+    return api.get(`/api/users/${userId}/history`);
   };
-  // ${userId || ""} because the user has two ways of getting his info
 
   getUserAchievements = (userId) => {
-    return api.get(`/api/users/${userId || ""}/achievements`);
+    // Fix the double slash issue
+    if (!userId) {
+      return api.get(`/api/users/achievements`);
+    }
+    return api.get(`/api/users/${userId}/achievements`);
   };
 
   getUserRank = (userId) => {
-    return api.get(`/api/users/${userId || ""}/ranks`);
+    // Fix the double slash issue
+    if (!userId) {
+      return api.get(`/api/users/ranks`);
+    }
+    return api.get(`/api/users/${userId}/ranks`);
   };
 
   getUserRatings = (userId) => {
-    return api.get(`/api/users/${userId || ""}/ratings`);
+    // Fix the double slash issue
+    if (!userId) {
+      return api.get(`/api/users/ratings`);
+    }
+    return api.get(`/api/users/${userId}/ratings`);
   };
 
   getUserRatingForGame = (userId) => {

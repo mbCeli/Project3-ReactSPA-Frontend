@@ -10,23 +10,16 @@ import SignupPage from "../pages/SignupPage/SignupPage";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import LogoutPage from "../pages/LogoutPage/LogoutPage";
 import HomePage from "../pages/HomePage/HomePage";
-import ProfilePage from "../pages/ProfilePage/ProfilePage"
+import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import GamesPage from "../pages/GamesPage/GamesPage";
 import GameDetailPage from "../pages/GameDetailPage/GameDetailPage";
 import LeaderboardPage from "../pages/LeaderboardPage/LeaderboardPage";
 
-import { adminRoutes } from "./AdminRoutes";
 
-/* 
-//NOT NEEDED BEACUSE OF THE AuthContext.jsx
-//to check que is authenticated by getting the token from the localStorage
-const checkAuthLoader = () => {
-    const token = localStorage.getItem("token");
-    if(!token) {
-        return redirect("/") //si no hay token you are not athenticated, tehn go back a la landing page
-    }
-    return null; // No redirection, allow navigation
-}; */
+// Admin Pages
+import DashboardPage from "../pages/admin/DashboardPage/DashboardPage";
+import GameManagementPage from "../pages/admin/GameManagementPage/GameManagementPage";
+import UserManagementPage from "../pages/admin/UserManagementPage/UserManagementPage";
 
 const router = createBrowserRouter([
   {
@@ -56,9 +49,7 @@ const router = createBrowserRouter([
       },
       {
         path: "logout",
-        element: (
-            <LogoutPage />
-        ),
+        element: <LogoutPage />,
       },
       {
         path: "/home",
@@ -100,12 +91,35 @@ const router = createBrowserRouter([
           </IsPrivate>
         ),
       },
+      // Admin routes directly included
+      {
+        path: "/admin/dashboard",
+        element: (
+          <IsPrivate adminOnly>
+            <DashboardPage />
+          </IsPrivate>
+        ),
+      },
+      {
+        path: "/admin/games",
+        element: (
+          <IsPrivate adminOnly>
+            <GameManagementPage />
+          </IsPrivate>
+        ),
+      },
+      {
+        path: "/admin/users",
+        element: (
+          <IsPrivate adminOnly>
+            <UserManagementPage />
+          </IsPrivate>
+        ),
+      },
       {
         path: "*",
         element: <NotFoundPage />,
       },
-
-      adminRoutes,
     ],
   },
 ]);

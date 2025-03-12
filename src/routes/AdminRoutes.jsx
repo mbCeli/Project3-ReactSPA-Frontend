@@ -5,34 +5,30 @@ import GameManagementPage from "../pages/admin/GameManagementPage/GameManagement
 import UserManagementPage from "../pages/admin/UserManagementPage/UserManagementPage";
 
 const adminRoutes = {
-    path: "admin",
-    children: [
-      {
-        path: "",
-        element: (
-          <IsPrivate adminOnly>
-            <DashboardPage />
-          </IsPrivate>
-        ),
-      },
-      {
-        path: "games",
-        element: (
-          <IsPrivate adminOnly>
-            <GameManagementPage />
-          </IsPrivate>
-        ),
-      },
-      {
-        path: "users",
-        element: (
-          <IsPrivate adminOnly>
-            <UserManagementPage />
-          </IsPrivate>
-        ),
-      },
-    ],
-  };
+  path: "dashboard",
+  element: (
+    <IsPrivate adminOnly>
+      <DashboardPage />
+    </IsPrivate>
+  ),
+  children: [
+    {
+      path: "games",
+      element: (
+        <IsPrivate adminOnly>
+          <GameManagementPage />
+        </IsPrivate>
+      ),
+    },
+    {
+      path: "users",
+      element: (
+        <IsPrivate adminOnly>
+          <UserManagementPage />
+        </IsPrivate>
+      ),
+    },
+  ],
+};
 
-export { adminRoutes }; 
-
+export { adminRoutes };
