@@ -12,7 +12,7 @@ function LogoutPage() {
 
   useEffect(() => {
     logOutUser();
-  }, []);
+  });
 
   return (
     <Box
