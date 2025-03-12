@@ -182,7 +182,7 @@ function GameDetailPage() {
         }}
       >
         <Box sx={{ textAlign: "center" }}>
-          <Typography variant="h5" component="h1" gutterBottom>
+          <Typography variant="h4" component="h1" gutterBottom>
             {game.title}
           </Typography>
           <Typography>Game by {game.creator}</Typography>

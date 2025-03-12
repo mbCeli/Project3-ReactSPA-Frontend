@@ -9,10 +9,10 @@ function LandingPage() {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Typography variant="h3" gutterBottom>
+      <Typography variant="h2" gutterBottom>
         Landing Page
       </Typography>
-      <Stack direction="row" spacing={1} mt={2}>
+      <Stack direction="row" spacing={2} mt={2}>
             <Button variant="contained" onClick={() => navigate("/login")}>
               Log In
             </Button>
