@@ -64,22 +64,30 @@ class GameService {
     });
   };
 
-  getUserFavoriteGames = async () => {
+  getUserFavouriteGames = async () => {
     try {
-      // First get the user data with favorites from the verify endpoint
-      const userResponse = await api.get("/auth/verify");
-      const favoriteIds = userResponse.data.favourites || [];
+      // First get the complete user data using our own getCurrentUser method
+      const currentUser = await this.getCurrentUser();
+      const userId = currentUser._id;
+      const userResponse = await api.get(`/api/users/${userId}`);
+
+      // Get the favorite IDs from the full user data
+      const favouriteIds = userResponse.data.favourites || [];
+      console.log("Favourite IDs:", favouriteIds);
 
       // If user has no favorites, return empty array
-      if (favoriteIds.length === 0) {
+      if (!favouriteIds || favouriteIds.length === 0) {
+        console.log("No favourites found");
         return [];
       }
 
       // Get details for all favorited games
-      return await this.getGamesByIds(favoriteIds);
+      const games = await this.getGamesByIds(favouriteIds);
+      console.log("Favourite games details:", games);
+      return games;
     } catch (error) {
-      console.error("Error fetching favorite games:", error);
-      throw error;
+      console.error("Error fetching favourite games:", error);
+      return []; // Return empty array instead of throwing
     }
   };
 

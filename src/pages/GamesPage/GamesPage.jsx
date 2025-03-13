@@ -154,28 +154,9 @@ function GamesPage() {
           gap: 2,
         }}
       >
-        <Button
-          variant="outlined"
-          onClick={() => navigate("/home")}
-          id="back-to-home-button"
-          data-testid="back-to-home-button"
-          size="medium"
-        >
-          Back to Home
-        </Button>
-
         <Typography variant="h3" component="h1">
           Games Library
         </Typography>
-
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleLogout}
-          size="medium"
-        >
-          Log Out
-        </Button>
       </Box>
 
       {/* Sort bar */}

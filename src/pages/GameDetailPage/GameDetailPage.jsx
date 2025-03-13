@@ -23,7 +23,6 @@ import {
   Alert,
 } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import CloseIcon from "@mui/icons-material/Close";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -31,7 +30,6 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 function GameDetailPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const { user, isLoggedIn } = useContext(AuthContext);
 
   const [game, setGame] = useState(null);
@@ -47,7 +45,10 @@ function GameDetailPage() {
     message: "",
     severity: "success",
   });
+
   const iframeRef = useRef(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGameDetails = async () => {
@@ -83,6 +84,11 @@ function GameDetailPage() {
       // Reset iframe loading state
       setIsFrameLoading(true);
 
+      // Update URL parameter immediately (before state update)
+      const url = new URL(window.location);
+      url.searchParams.set("playing", "true");
+      window.history.replaceState({}, "", url);
+
       // Toggle the playing state to show the iframe
       setIsPlaying(true);
     } catch (err) {
@@ -91,6 +97,12 @@ function GameDetailPage() {
   };
 
   const handleCloseGame = () => {
+    // Update URL parameter immediately (before state update)
+    const url = new URL(window.location);
+    url.searchParams.delete("playing");
+    window.history.replaceState({}, "", url);
+
+    // Update state
     setIsPlaying(false);
   };
 
@@ -150,6 +162,16 @@ function GameDetailPage() {
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
   };
+
+  useEffect(() => {
+    const url = new URL(window.location);
+    if (isPlaying) {
+      url.searchParams.set("playing", "true");
+    } else {
+      url.searchParams.delete("playing");
+    }
+    window.history.replaceState({}, "", url);
+  }, [isPlaying]);
 
   if (isLoading) {
     return (
@@ -218,24 +240,7 @@ function GameDetailPage() {
           position: "relative",
         }}
       >
-        <Button
-          variant="outlined"
-          size="small"
-          onClick={() => navigate("/games")}
-          sx={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            fontSize: "0.7rem",
-            py: 0.5,
-            px: 1,
-          }}
-        >
-          <ArrowBackIcon size="small" />
-          Back to Games
-        </Button>
-
-        {/* Title with favorite button */}
+        {/* Titlen */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Typography variant="h5" component="h1">
             {game.title}
@@ -268,9 +273,11 @@ function GameDetailPage() {
           </IconButton>
         </Box>
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1}}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Typography variant="subtitle1">Game by {game.creator}</Typography>
-          <Avatar sx={{ backgroundColor: "#f0f0f0", width: 20, height: 20, ml:2 }}>
+          <Avatar
+            sx={{ backgroundColor: "#f0f0f0", width: 20, height: 20, ml: 2 }}
+          >
             <GitHubIcon
               sx={{ color: "#333", fontSize: 12, width: 20, height: 20 }}
             />
@@ -448,7 +455,13 @@ function GameDetailPage() {
           >
             {/* Game Stats */}
             <Box sx={{ mb: 2, flexShrink: 0 }}>
-              <GameStats game={game} user={user} />
+              <GameStats
+                game={{
+                  ...game,
+                  totalPlays: game.analytics?.totalPlays || game.totalPlays || 0,
+                }}
+                user={user}
+              />
             </Box>
 
             {/* Comments y Ratings */}

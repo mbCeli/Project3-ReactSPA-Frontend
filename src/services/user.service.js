@@ -14,8 +14,25 @@ class UserService {
     return api.delete(`/api/users/${userId}`);
   };
 
+  // Updated method to handle profile updates (username and avatar)
+  updateProfile = (userId, profileData) => {
+    return api.put(`/api/users/${userId}`, profileData);
+  };
+
+  // Get available avatars (can be statically defined or fetched from the backend)
+  getAvailableAvatars = () => {
+    // This could be hardcoded if avatars are static
+    return [
+      "/assets/avatars/avatar1.png",
+      "/assets/avatars/avatar2.png",
+      "/assets/avatars/avatar3.png",
+      "/assets/avatars/avatar4.png",
+      "/assets/avatars/avatar5.png",
+      "/assets/avatars/avatar6.png",
+    ];
+  };
+
   getPlayHistory = (userId) => {
-    // Fix the double slash issue
     if (!userId) {
       return api.get(`/api/users/history`);
     }
@@ -23,7 +40,6 @@ class UserService {
   };
 
   getUserAchievements = (userId) => {
-    // Fix the double slash issue
     if (!userId) {
       return api.get(`/api/users/achievements`);
     }
@@ -31,7 +47,6 @@ class UserService {
   };
 
   getUserRank = (userId) => {
-    // Fix the double slash issue
     if (!userId) {
       return api.get(`/api/users/ranks`);
     }
@@ -39,7 +54,6 @@ class UserService {
   };
 
   getUserRatings = (userId) => {
-    // Fix the double slash issue
     if (!userId) {
       return api.get(`/api/users/ratings`);
     }

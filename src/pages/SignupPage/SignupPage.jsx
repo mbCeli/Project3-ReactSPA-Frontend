@@ -72,7 +72,7 @@ function SignupPage() {
 
   return (
     <Container maxWidth="sm">
-      <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
+      <Paper elevation={3} sx={{ p: 4, mt: 3 }}>
         <Typography variant="h4" component="h1" align="center" gutterBottom>
           Sign Up
         </Typography>

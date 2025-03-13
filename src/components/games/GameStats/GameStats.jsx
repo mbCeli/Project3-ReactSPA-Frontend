@@ -90,7 +90,7 @@ function GameStats({ game, user }) {
               color="primary"
               sx={{ fontWeight: "bold" }}
             >
-              {game.playCount || 0}
+              {game.totalPlays || 0}
             </Typography>
           </Card>
         </Grid2>

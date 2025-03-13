@@ -15,10 +15,7 @@ import {
   CardActions,
   Grid2,
   CircularProgress,
-  Avatar,
 } from "@mui/material";
-import DashboardCustomizeIcon from "@mui/icons-material/DashboardCustomize";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 function HomePage() {
   const { isLoggedIn, user } = useContext(AuthContext);
@@ -28,46 +25,49 @@ function HomePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getUserData = async () => {
-      if (isLoggedIn && user) {
-        try {
-          setIsLoading(true);
-          // Use analyticsService instead of userService for getting play history
-          const historyResponse = await analyticsService.getUserPlayHistory();
+  const getUserData = async () => {
+    if (isLoggedIn && user) {
+      try {
+        setIsLoading(true);
+        console.log("Fetching play history...");
+        // Use analyticsService instead of userService for getting play history
+        const historyResponse = await analyticsService.getUserPlayHistory();
+        console.log("Play history response:", historyResponse.data);
 
-          if (historyResponse.data && historyResponse.data.length > 0) {
-            // Sort by date and get the most recent
-            const sortedHistory = [...historyResponse.data].sort(
-              (a, b) =>
-                new Date(b.playedAt || b.playDate) -
-                new Date(a.playedAt || a.playDate)
+        if (historyResponse.data && historyResponse.data.length > 0) {
+          // Sort by date and get the most recent
+          const sortedHistory = [...historyResponse.data].sort(
+            (a, b) =>
+              new Date(b.playedAt || b.playDate) -
+              new Date(a.playedAt || a.playDate)
+          );
+          console.log("Sorted history:", sortedHistory);
+
+          // Check if the game object is already populated
+          if (sortedHistory[0] && sortedHistory[0].game) {
+            // Game object is already in the response
+            setLastPlayedGame(sortedHistory[0].game);
+          } else if (sortedHistory[0] && sortedHistory[0].gameId) {
+            // If game is not populated but gameId is available
+            const gameResponse = await gameService.getGame(
+              sortedHistory[0].gameId
             );
-
-            if (sortedHistory[0] && sortedHistory[0].gameId) {
-              const gameResponse = await gameService.getGame(
-                sortedHistory[0].gameId
-              );
-              setLastPlayedGame(gameResponse.data);
-            }
+            setLastPlayedGame(gameResponse.data);
           }
-
-          setIsLoading(false);
-        } catch (err) {
-          console.error("Error fetching user data:", err);
-          setIsLoading(false);
         }
-      } else {
+
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error fetching user data:", err);
         setIsLoading(false);
       }
-    };
-
-    getUserData();
-  }, [isLoggedIn, user]);
-
-  const handleLogout = () => {
-    console.log("logout button clicked");
-    navigate("/logout");
+    } else {
+      setIsLoading(false);
+    }
   };
+
+  getUserData();
+}, [isLoggedIn, user]);
 
   return (
     <Box
@@ -87,7 +87,7 @@ function HomePage() {
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "center",
             mb: 3,
             flexWrap: "wrap",
             gap: 1,
@@ -112,67 +112,15 @@ function HomePage() {
                     <Typography variant="subtitle1" color="text.secondary">
                       You have admin privileges
                     </Typography>
-                    <Box>
-                      <Button
-                        onClick={() => navigate("/profile")}
-                        sx={{ textAlign: "center" }}
-                      >
-                        <AccountCircleIcon
-                          sx={{
-                            color: "orange",
-                            fontSize: "2rem",
-                            boxShadow: "0 0 5px orange",
-                          }}
-                        />
-                      </Button>
-                      <Typography sx={{ fontSize: "0.8rem", color: "orange" }}>
-                        Your Profile
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Button onClick={() => navigate("/admin/dashboard")}>
-                        <DashboardCustomizeIcon
-                          sx={{
-                            color: "orange",
-                            fontSize: "2rem",
-                            boxShadow: "0 0 5px orange",
-                          }}
-                        />
-                      </Button>
-                      <Typography sx={{ fontSize: "0.8rem", color: "orange" }}>
-                        Admin Dashboard
-                      </Typography>
-                    </Box>
                   </>
                 ) : (
-                  <Box>
-                    <Button
-                      onClick={() => navigate("/profile")}
-                      sx={{ textAlign: "center" }}
-                    >
-                      <AccountCircleIcon
-                        sx={{
-                          color: "orange",
-                          fontSize: "2rem",
-                          boxShadow: "0 0 5px orange",
-                        }}
-                      />
-                    </Button>
-                    <Typography sx={{ fontSize: "0.8rem", color: "orange" }}>
-                      Your Profile
+                  <>
+                    <Typography variant="subtitle1" color="text.secondary">
+                      Time to have fun
                     </Typography>
-                  </Box>
+                  </>
                 )}
               </Box>
-
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleLogout}
-                size="medium"
-              >
-                Log Out
-              </Button>
             </>
           ) : (
             <>
@@ -205,7 +153,10 @@ function HomePage() {
                 item
                 xs={12}
                 md={6}
-                sx={{ display: "flex", height: "500px" }}
+                sx={{
+                  display: "flex",
+                  flex: 2,
+                }}
               >
                 <Card
                   sx={{
@@ -220,6 +171,7 @@ function HomePage() {
                       transform: "translateY(-5px)",
                       boxShadow: 4,
                     },
+                    flexGrow: 2,
                   }}
                 >
                   <CardContent
@@ -276,7 +228,10 @@ function HomePage() {
                 item
                 xs={12}
                 md={6}
-                sx={{ display: "flex", height: "500px" }}
+                sx={{
+                  display: "flex",
+                  flex: 2,
+                }}
               >
                 <Card
                   sx={{
@@ -291,6 +246,7 @@ function HomePage() {
                       transform: "translateY(-5px)",
                       boxShadow: 4,
                     },
+                    flexGrow: 2,
                   }}
                 >
                   <CardContent
