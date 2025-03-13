@@ -10,6 +10,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import HomeIcon from "@mui/icons-material/Home";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import CloseIcon from "@mui/icons-material/Close";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Sidebar = () => {
@@ -17,8 +18,28 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [clickedButton, setClickedButton] = useState(null);
-
   const [activeButtonIndex, setActiveButtonIndex] = useState(0);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+
+  // Load custom bubble fonts
+  useEffect(() => {
+    // Check if fonts are already loaded (avoid duplicate link elements)
+    if (!document.querySelector('link[href*="Bubblegum+Sans"]')) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href =
+        "https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Fredoka+One&family=Luckiest+Guy&display=swap";
+      document.head.appendChild(link);
+    }
+
+    const timer = setTimeout(() => {
+      setFontsLoaded(true);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     // Determine active button index based on current location
     if (location.pathname === "/home" || location.pathname === "/") {
@@ -37,7 +58,6 @@ const Sidebar = () => {
     } else if (location.pathname.includes("/profile")) {
       setActiveButtonIndex(4);
     }
-    // Don't set a default here, as we want to keep the current index if none of the conditions match
   }, [location.pathname]); // This will run whenever the URL path changes
 
   // Check if we're on a game detail page and if the game is playing
@@ -45,10 +65,28 @@ const Sidebar = () => {
   const urlParams = new URLSearchParams(location.search);
   const isPlaying = urlParams.get("playing") === "true";
 
-  // If on game detail page and game is playing, don't show sidebar
-  if (isGameDetailPage && isPlaying) {
-    return null;
-  }
+  // Check for global "playing" event listeners
+  useEffect(() => {
+    // Function to listen for custom "game started" event
+    const handleGameStarted = () => {
+      setIsSidebarVisible(false);
+    };
+
+    // Function to listen for custom "game ended" event
+    const handleGameEnded = () => {
+      setIsSidebarVisible(true);
+    };
+
+    // Add event listeners
+    window.addEventListener("gameStarted", handleGameStarted);
+    window.addEventListener("gameEnded", handleGameEnded);
+
+    // Clean up
+    return () => {
+      window.removeEventListener("gameStarted", handleGameStarted);
+      window.removeEventListener("gameEnded", handleGameEnded);
+    };
+  }, []);
 
   // Style for the sidebar container
   const sidebarStyle = {
@@ -61,13 +99,17 @@ const Sidebar = () => {
     alignItems: "center",
     borderRadius: 30,
     padding: "15px 10px",
-    backgroundColor: "custom.mediumPink",
-    boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.05)",
+    backgroundColor: "rgba(248, 187, 208, 0.9)", // Updated to use rgba for transparency
+    backdropFilter: "blur(10px)",
+    boxShadow: "0px 8px 25px rgba(0, 0, 0, 0.15)",
     width: 70,
     zIndex: 1000,
+    border: "3px solid rgba(255, 255, 255, 0.6)",
+    transition: "opacity 0.5s ease",
+    opacity: fontsLoaded ? 1 : 0,
   };
 
-  // Style for buttons
+  // Updated style for buttons with bubble style
   const buttonStyle = {
     padding: 0,
     width: 50,
@@ -79,8 +121,8 @@ const Sidebar = () => {
     backgroundColor: "transparent",
     border: "none",
     boxShadow: "none",
-    borderRadius: "0",
-    transition: "transform 0.3s ease", // Add smooth transition
+    borderRadius: "50%", // Make buttons circular
+    transition: "all 0.3s ease", // Smooth transition for all properties
   };
 
   // Check if path is active
@@ -130,15 +172,17 @@ const Sidebar = () => {
   // Circle animation variants for click effect
   const circleVariants = {
     initial: { scale: 0, opacity: 0.8 },
-    animate: { scale: 1, opacity: 0, transition: { duration: 0.3 } },
+    animate: { scale: 1.3, opacity: 0, transition: { duration: 0.5 } },
   };
 
+  // Hide sidebar on certain pages or when playing a game
   if (
-    //if on the login, signup, or logout page, don't show me the sidebar
     location.pathname === "/login" ||
     location.pathname === "/signup" ||
     location.pathname === "/logout" ||
-    location.pathname === "/"
+    location.pathname === "*" ||
+    location.pathname === "/" ||
+    !isSidebarVisible
   ) {
     return null;
   }
@@ -151,12 +195,47 @@ const Sidebar = () => {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.3, type: "spring", stiffness: 120 }}
         sx={sidebarStyle}
       >
+        {/* Decorative elements */}
         <Box
           sx={{
-            backgroundColor: "background.default", // Outer circle color
+            position: "absolute",
+            left: -15,
+            top: -15,
+            width: 30,
+            height: 30,
+            borderRadius: "50%",
+            backgroundColor: "#ffcdd2",
+            opacity: 0.6,
+            animation: "float 6s ease-in-out infinite",
+            "@keyframes float": {
+              "0%, 100%": { transform: "translateY(0px)" },
+              "50%": { transform: "translateY(-10px)" },
+            },
+            zIndex: -1,
+          }}
+        />
+        <Box
+          sx={{
+            position: "absolute",
+            right: -10,
+            bottom: -15,
+            width: 25,
+            height: 25,
+            borderRadius: "50%",
+            backgroundColor: "#42a5f5",
+            opacity: 0.5,
+            animation: "float 7s ease-in-out infinite 1s",
+            zIndex: -1,
+          }}
+        />
+
+        {/* Active indicator */}
+        <Box
+          sx={{
+            backgroundColor: "background.default", // Outer circle color - keeping original
             borderRadius: "50%",
             position: "absolute",
             width: 60,
@@ -164,12 +243,13 @@ const Sidebar = () => {
             right: -22,
             top: `${15 + activeButtonIndex * 60}px`, // Position based on active button
             zIndex: -1,
-            transition: "top 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)", // Longer duration with spring-like effect
+            transition: "top 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)", // Spring-like effect
+            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.1)",
           }}
         />
         <Box
           sx={{
-            backgroundColor: "custom.mediumPink", // Inner circle color
+            backgroundColor: "rgba(248, 187, 208, 0.9)", // Inner circle color - keeping original
             borderRadius: "50%",
             position: "absolute",
             width: 50,
@@ -177,26 +257,39 @@ const Sidebar = () => {
             right: -17,
             top: `${20 + activeButtonIndex * 60}px`, // Position based on active button
             boxShadow: "inset 0px 1px 3px rgba(0,0,0,0.1)",
-            transition: "top 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)", // Longer duration with spring-like effect
+            transition: "top 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)", // Spring-like effect
           }}
         />
+
         {/* Home Button */}
         <Box sx={{ position: "relative" }}>
-          <Tooltip title="Home" placement="right">
+          <Tooltip
+            title="Home"
+            placement="right"
+            arrow
+            sx={{
+              "& .MuiTooltip-tooltip": {
+                fontFamily: "'Bubblegum Sans', cursive",
+                fontSize: "1rem",
+                borderRadius: 2,
+              },
+            }}
+          >
             <IconButton
               sx={{
                 ...buttonStyle,
-                color: isActive("/home") ? "#f5f5f5" : "inherit",
+                color: isActive("/home") ? "#ffffff" : "#42a5f5",
                 position: "relative",
                 zIndex: 2,
                 transform: isActive("/home")
                   ? "translateX(26px)"
                   : "translateX(0)",
+                transition: "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
               }}
               onClick={() => handleNavigation("/home", 0)} // Pass 0 as the index for Home
               disableRipple
             >
-              <HomeIcon />
+              <HomeIcon fontSize="medium" />
 
               {/* Click animation circle */}
               {clickedButton === "home" && (
@@ -210,7 +303,7 @@ const Sidebar = () => {
                     width: "50px",
                     height: "50px",
                     borderRadius: "50%",
-                    border: "2px solid orange",
+                    border: "3px solid #42a5f5",
                     zIndex: -1,
                   }}
                 />
@@ -221,17 +314,33 @@ const Sidebar = () => {
 
         {/* Back Button */}
         <Box sx={{ position: "relative" }}>
-          <Tooltip title="Go Back" placement="right">
+          <Tooltip
+            title="Go Back"
+            placement="right"
+            arrow
+            sx={{
+              "& .MuiTooltip-tooltip": {
+                fontFamily: "'Bubblegum Sans', cursive",
+                fontSize: "1rem",
+                borderRadius: 2,
+              },
+            }}
+          >
             <IconButton
               sx={{
                 ...buttonStyle,
                 position: "relative",
                 zIndex: 2,
+                color: "#424242",
+                "&:hover": {
+                  backgroundColor: "rgba(255, 255, 255, 0.3)",
+                  transform: "scale(1.1) rotate(-10deg)", // Rotate on hover
+                },
               }}
               onClick={handleGoBack}
               disableRipple
             >
-              <ArrowBackIcon />
+              <ArrowBackIcon fontSize="medium" />
             </IconButton>
           </Tooltip>
         </Box>
@@ -239,21 +348,48 @@ const Sidebar = () => {
         {/* Games Button */}
         {isLoggedIn && (
           <Box sx={{ position: "relative" }}>
-            <Tooltip title="Games" placement="right">
+            <Tooltip
+              title="Games"
+              placement="right"
+              arrow
+              sx={{
+                "& .MuiTooltip-tooltip": {
+                  fontFamily: "'Bubblegum Sans', cursive",
+                  fontSize: "1rem",
+                  borderRadius: 2,
+                },
+              }}
+            >
               <IconButton
                 sx={{
                   ...buttonStyle,
-                  color: isActive("/games") ? "#f5f5f5" : "inherit",
+                  color: isActive("/games") ? "#ffffff" : "#42a5f5",
                   position: "relative",
                   zIndex: 2,
                   transform: isActive("/games")
                     ? "translateX(26px)"
                     : "translateX(0)",
+                  transition:
+                    "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
                 }}
                 onClick={() => handleNavigation("/games", 2)}
                 disableRipple
               >
-                <SportsEsportsIcon />
+                <SportsEsportsIcon
+                  fontSize="medium"
+                  sx={
+                    isActive("/games")
+                      ? {
+                          animation: "pulse 2s infinite",
+                          "@keyframes pulse": {
+                            "0%": { transform: "scale(1)" },
+                            "50%": { transform: "scale(1.2)" },
+                            "100%": { transform: "scale(1)" },
+                          },
+                        }
+                      : {}
+                  }
+                />
 
                 {/* Click animation circle */}
                 {clickedButton === "games" && (
@@ -267,7 +403,7 @@ const Sidebar = () => {
                       width: "50px",
                       height: "50px",
                       borderRadius: "50%",
-                      border: "2px solid orange",
+                      border: "3px solid #42a5f5",
                       zIndex: -1,
                     }}
                   />
@@ -280,21 +416,52 @@ const Sidebar = () => {
         {/* Leaderboard Button */}
         {isLoggedIn && (
           <Box sx={{ position: "relative" }}>
-            <Tooltip title="Leaderboard" placement="right">
+            <Tooltip
+              title="Leaderboard"
+              placement="right"
+              arrow
+              sx={{
+                "& .MuiTooltip-tooltip": {
+                  fontFamily: "'Bubblegum Sans', cursive",
+                  fontSize: "1rem",
+                  borderRadius: 2,
+                },
+              }}
+            >
               <IconButton
                 sx={{
                   ...buttonStyle,
-                  color: isActive("/leaderboard") ? "#f5f5f5" : "inherit",
+                  color: isActive("/leaderboard") ? "#ffffff" : "#42a5f5",
                   position: "relative",
                   zIndex: 2,
                   transform: isActive("/leaderboard")
                     ? "translateX(26px)"
                     : "translateX(0)",
+                  transition:
+                    "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
                 }}
                 onClick={() => handleNavigation("/leaderboard", 3)}
                 disableRipple
               >
-                <LeaderboardIcon />
+                <LeaderboardIcon fontSize="medium" />
+
+                {/* Click animation circle */}
+                {clickedButton === "leaderboard" && (
+                  <Box
+                    component={motion.div}
+                    initial="initial"
+                    animate="animate"
+                    variants={circleVariants}
+                    sx={{
+                      position: "absolute",
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "50%",
+                      border: "3px solid #42a5f5",
+                      zIndex: -1,
+                    }}
+                  />
+                )}
               </IconButton>
             </Tooltip>
           </Box>
@@ -303,21 +470,52 @@ const Sidebar = () => {
         {/* Profile Button - Only if logged in */}
         {isLoggedIn && (
           <Box sx={{ position: "relative" }}>
-            <Tooltip title="Profile" placement="right">
+            <Tooltip
+              title="Profile"
+              placement="right"
+              arrow
+              sx={{
+                "& .MuiTooltip-tooltip": {
+                  fontFamily: "'Bubblegum Sans', cursive",
+                  fontSize: "1rem",
+                  borderRadius: 2,
+                },
+              }}
+            >
               <IconButton
                 sx={{
                   ...buttonStyle,
-                  color: isActive("/profile") ? "#f5f5f5" : "inherit",
+                  color: isActive("/profile") ? "#ffffff" : "#42a5f5",
                   position: "relative",
                   zIndex: 2,
                   transform: isActive("/profile")
                     ? "translateX(26px)"
                     : "translateX(0)",
+                  transition:
+                    "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
                 }}
                 onClick={() => handleNavigation("/profile", 4)}
                 disableRipple
               >
-                <PersonIcon />
+                <PersonIcon fontSize="medium" />
+
+                {/* Click animation circle */}
+                {clickedButton === "profile" && (
+                  <Box
+                    component={motion.div}
+                    initial="initial"
+                    animate="animate"
+                    variants={circleVariants}
+                    sx={{
+                      position: "absolute",
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "50%",
+                      border: "3px solid #42a5f5",
+                      zIndex: -1,
+                    }}
+                  />
+                )}
               </IconButton>
             </Tooltip>
           </Box>
@@ -326,21 +524,52 @@ const Sidebar = () => {
         {/* Admin Dashboard Button - Only if admin */}
         {isLoggedIn && user?.isAdmin && (
           <Box sx={{ position: "relative" }}>
-            <Tooltip title="Admin Dashboard" placement="right">
+            <Tooltip
+              title="Admin Dashboard"
+              placement="right"
+              arrow
+              sx={{
+                "& .MuiTooltip-tooltip": {
+                  fontFamily: "'Bubblegum Sans', cursive",
+                  fontSize: "1rem",
+                  borderRadius: 2,
+                },
+              }}
+            >
               <IconButton
                 sx={{
                   ...buttonStyle,
-                  color: isActive("/admin/dashboard") ? "#f5f5f5" : "inherit",
+                  color: isActive("/admin/dashboard") ? "#ffffff" : "#42a5f5",
                   position: "relative",
                   zIndex: 2,
                   transform: isActive("/admin/dashboard")
                     ? "translateX(26px)"
                     : "translateX(0)",
+                  transition:
+                    "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
                 }}
                 onClick={() => handleNavigation("/admin/dashboard", 5)}
                 disableRipple
               >
-                <DashboardIcon />
+                <DashboardIcon fontSize="medium" />
+
+                {/* Click animation circle */}
+                {clickedButton === "admin" && (
+                  <Box
+                    component={motion.div}
+                    initial="initial"
+                    animate="animate"
+                    variants={circleVariants}
+                    sx={{
+                      position: "absolute",
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "50%",
+                      border: "3px solid #42a5f5",
+                      zIndex: -1,
+                    }}
+                  />
+                )}
               </IconButton>
             </Tooltip>
           </Box>
@@ -349,17 +578,32 @@ const Sidebar = () => {
         {/* Logout Button - Only if logged in */}
         {isLoggedIn && (
           <Box sx={{ position: "relative" }}>
-            <Tooltip title="Logout" placement="right">
+            <Tooltip
+              title="Logout"
+              placement="right"
+              arrow
+              sx={{
+                "& .MuiTooltip-tooltip": {
+                  fontFamily: "'Bubblegum Sans', cursive",
+                  fontSize: "1rem",
+                  borderRadius: 2,
+                },
+              }}
+            >
               <IconButton
                 sx={{
                   ...buttonStyle,
                   position: "relative",
                   zIndex: 2,
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 205, 210, 0.3)",
+                    transform: "scale(1.1)",
+                  },
                 }}
                 onClick={handleLogout}
                 disableRipple
               >
-                <LogoutIcon color="error" />
+                <LogoutIcon fontSize="medium" sx={{ color: "#f44336" }} />
               </IconButton>
             </Tooltip>
           </Box>

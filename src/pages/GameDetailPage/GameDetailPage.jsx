@@ -27,6 +27,8 @@ import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import CloseIcon from "@mui/icons-material/Close";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
 
 function GameDetailPage() {
   const { id } = useParams();
@@ -45,10 +47,31 @@ function GameDetailPage() {
     message: "",
     severity: "success",
   });
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
   const iframeRef = useRef(null);
 
   const navigate = useNavigate();
+
+  // Load custom bubble fonts
+  useEffect(() => {
+    // Add Google Fonts link for bubble fonts
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Fredoka+One&family=Luckiest+Guy&display=swap";
+    document.head.appendChild(link);
+
+    // Set fonts as loaded after a short delay to ensure they're applied
+    const timer = setTimeout(() => {
+      setFontsLoaded(true);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+      // Don't remove the link if it might be used by other components
+    };
+  }, []);
 
   useEffect(() => {
     const fetchGameDetails = async () => {
@@ -173,6 +196,35 @@ function GameDetailPage() {
     window.history.replaceState({}, "", url);
   }, [isPlaying]);
 
+  // Game-themed decorative icons
+  const decorativeIcons = [
+    { icon: "🎮", size: 30, top: "5%", left: "3%", rotate: "-5deg", delay: 0 },
+    {
+      icon: "🏆",
+      size: 25,
+      top: "12%",
+      right: "5%",
+      rotate: "10deg",
+      delay: 0.5,
+    },
+    {
+      icon: "🎯",
+      size: 22,
+      bottom: "8%",
+      left: "7%",
+      rotate: "8deg",
+      delay: 1,
+    },
+    {
+      icon: "🎲",
+      size: 28,
+      bottom: "15%",
+      right: "6%",
+      rotate: "-8deg",
+      delay: 1.5,
+    },
+  ];
+
   if (isLoading) {
     return (
       <Box
@@ -180,11 +232,75 @@ function GameDetailPage() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          flexDirection: "column",
           height: "calc(100vh - 64px)", // Adjust based on your header height
           width: "100%",
+          background: "linear-gradient(135deg, #bbdefb 0%, #90caf9 100%)",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <CircularProgress size={40} />
+        {/* Decorative elements */}
+        {decorativeIcons.map((icon, index) => (
+          <Typography
+            key={index}
+            component="div"
+            sx={{
+              position: "absolute",
+              top: icon.top,
+              left: icon.left,
+              right: icon.right,
+              bottom: icon.bottom,
+              fontSize: icon.size,
+              transform: `rotate(${icon.rotate})`,
+              opacity: 0.3,
+              animation: `float 5s ease-in-out infinite ${icon.delay}s`,
+              "@keyframes float": {
+                "0%, 100%": {
+                  transform: `rotate(${icon.rotate}) translateY(0px)`,
+                },
+                "50%": {
+                  transform: `rotate(${icon.rotate}) translateY(-15px)`,
+                },
+              },
+            }}
+          >
+            {icon.icon}
+          </Typography>
+        ))}
+
+        <CircularProgress
+          size={60}
+          thickness={4}
+          sx={{
+            mb: 3,
+            color: "#42a5f5",
+          }}
+        />
+        <Typography
+          sx={{
+            fontFamily: "'Fredoka One', cursive",
+            fontSize: "1.5rem",
+            color: "#424242",
+            textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
+          }}
+        >
+          Loading game details...
+        </Typography>
+
+        <SportsEsportsIcon
+          sx={{
+            fontSize: 40,
+            color: "#ba68c8",
+            animation: "pulse 1.5s infinite",
+            mt: 2,
+            "@keyframes pulse": {
+              "0%": { transform: "scale(1)" },
+              "50%": { transform: "scale(1.2)" },
+              "100%": { transform: "scale(1)" },
+            },
+          }}
+        />
       </Box>
     );
   }
@@ -199,16 +315,68 @@ function GameDetailPage() {
           height: "calc(100vh - 10px)",
           justifyContent: "center",
           width: "100%",
+          background: "linear-gradient(135deg, #bbdefb 0%, #90caf9 100%)",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <Box sx={{ maxWidth: "800px", width: "100%", textAlign: "center" }}>
-          <Typography variant="h5" color="error">
+        {/* Decorative elements */}
+        {decorativeIcons.map((icon, index) => (
+          <Typography
+            key={index}
+            component="div"
+            sx={{
+              position: "absolute",
+              top: icon.top,
+              left: icon.left,
+              right: icon.right,
+              bottom: icon.bottom,
+              fontSize: icon.size,
+              transform: `rotate(${icon.rotate})`,
+              opacity: 0.3,
+              animation: `float 5s ease-in-out infinite ${icon.delay}s`,
+            }}
+          >
+            {icon.icon}
+          </Typography>
+        ))}
+
+        <Box
+          sx={{
+            maxWidth: "800px",
+            width: "100%",
+            textAlign: "center",
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
+          <Typography
+            variant="h5"
+            color="error"
+            sx={{
+              fontFamily: "'Luckiest Guy', cursive",
+              mb: 2,
+            }}
+          >
             {error || "Game not found"}
           </Typography>
           <Button
             variant="contained"
             onClick={() => navigate("/games")}
-            sx={{ mt: 2 }}
+            sx={{
+              mt: 2,
+              borderRadius: 28,
+              px: 3,
+              py: 1,
+              fontFamily: "'Fredoka One', cursive",
+              textTransform: "none",
+              backgroundColor: "#42a5f5",
+              "&:hover": {
+                backgroundColor: "#1e88e5",
+                transform: "scale(1.05)",
+              },
+              transition: "all 0.3s ease",
+            }}
           >
             Back to Games
           </Button>
@@ -227,8 +395,44 @@ function GameDetailPage() {
         flexDirection: "column",
         px: { xs: 2, md: 4 },
         py: 1,
+        background: "linear-gradient(135deg, #bbdefb 0%, #90caf9 100%)",
+        position: "relative",
+        transition: "opacity 0.5s ease",
+        opacity: fontsLoaded ? 1 : 0,
       }}
     >
+      {/* Decorative circles */}
+      <Box
+        sx={{
+          position: "absolute",
+          right: "10%",
+          top: "30%",
+          width: 200,
+          height: 200,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, #ba68c8 0%, rgba(186, 104, 200, 0) 70%)",
+          opacity: 0.2,
+          zIndex: 0,
+          pointerEvents: "none",
+        }}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          left: "5%",
+          bottom: "20%",
+          width: 250,
+          height: 250,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, #ffcdd2 0%, rgba(255, 205, 210, 0) 70%)",
+          opacity: 0.3,
+          zIndex: 0,
+          pointerEvents: "none",
+        }}
+      />
+
       {/* header */}
       <Box
         sx={{
@@ -238,11 +442,26 @@ function GameDetailPage() {
           mb: 1,
           width: "100%",
           position: "relative",
+          zIndex: 1,
+          background: "rgba(255, 255, 255, 0.7)",
+          borderRadius: 4,
+          py: 1,
+          backdropFilter: "blur(10px)",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
         }}
       >
-        {/* Titlen */}
+        {/* Title */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography variant="h5" component="h1">
+          <Typography
+            variant="h5"
+            component="h1"
+            sx={{
+              fontFamily: "'Luckiest Guy', cursive",
+              color: "#42a5f5",
+              letterSpacing: "1px",
+              textShadow: "2px 2px 0px rgba(0,0,0,0.05)",
+            }}
+          >
             {game.title}
           </Typography>
           <IconButton
@@ -274,9 +493,25 @@ function GameDetailPage() {
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography variant="subtitle1">Game by {game.creator}</Typography>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontFamily: "'Bubblegum Sans', cursive",
+            }}
+          >
+            Game by {game.creator}
+          </Typography>
           <Avatar
-            sx={{ backgroundColor: "#f0f0f0", width: 20, height: 20, ml: 2 }}
+            sx={{
+              backgroundColor: "#f0f0f0",
+              width: 20,
+              height: 20,
+              ml: 2,
+              transition: "transform 0.3s ease",
+              "&:hover": {
+                transform: "rotate(360deg)",
+              },
+            }}
           >
             <GitHubIcon
               sx={{ color: "#333", fontSize: 12, width: 20, height: 20 }}
@@ -287,8 +522,13 @@ function GameDetailPage() {
             target="_blank"
             sx={{
               textDecoration: "none",
-              color: "#333",
+              color: "#ba68c8",
               fontSize: "0.8rem",
+              fontFamily: "'Fredoka One', cursive",
+              transition: "color 0.3s ease",
+              "&:hover": {
+                color: "#9c27b0",
+              },
             }}
           >
             Github Profile
@@ -297,7 +537,16 @@ function GameDetailPage() {
       </Box>
 
       {/* Main */}
-      <Box sx={{ display: "flex", flexGrow: 1, width: "100%", gap: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexGrow: 1,
+          width: "100%",
+          gap: 2,
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
         {/* Game */}
         <Box
           sx={{
@@ -325,6 +574,8 @@ function GameDetailPage() {
                   borderRadius: 2,
                   overflow: "hidden",
                   transition: "all 0.3s ease-in-out",
+                  boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
+                  border: "4px solid rgba(255,255,255,0.6)",
                 }}
               >
                 {isFrameLoading && (
@@ -336,16 +587,46 @@ function GameDetailPage() {
                       right: 0,
                       bottom: 0,
                       display: "flex",
+                      flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
-                      backgroundColor: "rgba(255, 255, 255, 0.8)",
+                      backgroundColor: "rgba(255, 255, 255, 0.9)",
                       zIndex: 2,
                     }}
                   >
-                    <CircularProgress />
-                    <Typography variant="body1" sx={{ ml: 2 }}>
+                    <CircularProgress
+                      size={50}
+                      sx={{
+                        color: "#42a5f5",
+                        mb: 2,
+                      }}
+                    />
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontFamily: "'Fredoka One', cursive",
+                        fontSize: "1.2rem",
+                        color: "#424242",
+                      }}
+                    >
                       Loading game...
                     </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: 1,
+                        mt: 2,
+                        animation: "bounce 1.5s infinite",
+                        "@keyframes bounce": {
+                          "0%, 100%": { transform: "translateY(0)" },
+                          "50%": { transform: "translateY(-10px)" },
+                        },
+                      }}
+                    >
+                      <VideogameAssetIcon sx={{ color: "#ffcdd2" }} />
+                      <VideogameAssetIcon sx={{ color: "#ba68c8" }} />
+                      <VideogameAssetIcon sx={{ color: "#42a5f5" }} />
+                    </Box>
                   </Box>
                 )}
 
@@ -353,16 +634,19 @@ function GameDetailPage() {
                   onClick={toggleFullscreen}
                   sx={{
                     position: "absolute",
-                    top: 8,
-                    right: 8,
+                    top: 12,
+                    right: 12,
                     zIndex: 3,
-                    backgroundColor: "rgba(255, 255, 255, 0.7)",
+                    backgroundColor: "rgba(255, 255, 255, 0.8)",
                     "&:hover": {
                       backgroundColor: "rgba(255, 255, 255, 0.9)",
+                      transform: "scale(1.1)",
                     },
+                    transition: "all 0.3s ease",
+                    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
                   }}
                 >
-                  <FullscreenIcon />
+                  <FullscreenIcon sx={{ color: "#42a5f5" }} />
                 </IconButton>
 
                 <Button
@@ -371,9 +655,17 @@ function GameDetailPage() {
                   onClick={handleCloseGame}
                   sx={{
                     position: "absolute",
-                    bottom: 8,
-                    right: 8,
+                    bottom: 12,
+                    right: 12,
                     zIndex: 3,
+                    borderRadius: 28,
+                    fontFamily: "'Fredoka One', cursive",
+                    textTransform: "none",
+                    boxShadow: "0 4px 10px rgba(186, 104, 200, 0.4)",
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                    },
+                    transition: "all 0.3s ease",
                   }}
                 >
                   <CloseIcon />
@@ -398,17 +690,55 @@ function GameDetailPage() {
                   width: "80%",
                   maxWidth: "600px",
                   maxHeight: "400px",
-                  borderRadius: 2,
+                  borderRadius: 8,
                   display: "flex",
                   flexDirection: "column",
                   transition: "all 0.3s ease-in-out",
-                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
+                  boxShadow: "0 10px 30px rgba(0, 0, 0, 0.15)",
+                  background: "rgba(255, 255, 255, 0.9)",
+                  backdropFilter: "blur(10px)",
+                  border: "4px solid rgba(255,255,255,0.4)",
+                  position: "relative",
+                  overflow: "hidden",
+                  transform: "translateY(0)",
+                  "&:hover": {
+                    transform: "translateY(-10px)",
+                    boxShadow: "0 15px 40px rgba(0, 0, 0, 0.2)",
+                  },
                 }}
               >
+                {/* Background pattern for card */}
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    opacity: 0.05,
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                    zIndex: 0,
+                  }}
+                />
+
                 <CardContent
-                  sx={{ display: "flex", flexDirection: "column", p: 3 }}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    p: 3,
+                    position: "relative",
+                    zIndex: 1,
+                  }}
                 >
-                  <Typography variant="body1" sx={{ mb: 3 }}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      mb: 3,
+                      fontFamily: "'Bubblegum Sans', cursive",
+                      fontSize: "1.1rem",
+                      color: "#424242",
+                    }}
+                  >
                     {game.description || "No description available"}
                   </Typography>
 
@@ -424,7 +754,21 @@ function GameDetailPage() {
                       color="primary"
                       onClick={handlePlayGame}
                       size="large"
-                      sx={{ minWidth: 200, py: 1.5 }}
+                      sx={{
+                        minWidth: 200,
+                        py: 1.5,
+                        borderRadius: 28,
+                        background: "linear-gradient(45deg, #42a5f5, #1976d2)",
+                        fontFamily: "'Fredoka One', cursive",
+                        fontSize: "1.1rem",
+                        textTransform: "none",
+                        boxShadow: "0 4px 15px rgba(66, 165, 245, 0.4)",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          transform: "translateY(-3px)",
+                          boxShadow: "0 8px 25px rgba(66, 165, 245, 0.6)",
+                        },
+                      }}
                     >
                       Play Game
                     </Button>
@@ -454,18 +798,52 @@ function GameDetailPage() {
             }}
           >
             {/* Game Stats */}
-            <Box sx={{ mb: 2, flexShrink: 0 }}>
+            <Box
+              sx={{
+                mb: 2,
+                flexShrink: 0,
+                width: "100%",
+                "& > *": {
+                  // Target the stats component
+                  background: "rgba(255, 255, 255, 0.9) !important", // Override its background
+                  borderRadius: "16px !important", // Make it rounded
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.1) !important", // Add shadow
+                  backdropFilter: "blur(10px) !important", // Add blur effect
+                  border: "3px solid rgba(255,255,255,0.4) !important", // Add border
+                  transition: "all 0.3s ease !important", // Smooth transition
+                  "&:hover": {
+                    transform: "translateY(-5px) !important", // Lift on hover
+                    boxShadow: "0 12px 30px rgba(0,0,0,0.15) !important", // Enhance shadow
+                  },
+                },
+              }}
+            >
               <GameStats
                 game={{
                   ...game,
-                  totalPlays: game.analytics?.totalPlays || game.totalPlays || 0,
+                  totalPlays:
+                    game.analytics?.totalPlays || game.totalPlays || 0,
                 }}
                 user={user}
               />
             </Box>
 
             {/* Comments y Ratings */}
-            <Box sx={{ flexGrow: 1, overflow: "hidden" }}>
+            <Box
+              sx={{
+                flexGrow: 1,
+                overflow: "hidden",
+                width: "100%",
+                "& > *": {
+                  // Target the comments component
+                  background: "rgba(255, 255, 255, 0.9) !important", // Override its background
+                  borderRadius: "16px !important", // Make it rounded
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.1) !important", // Add shadow
+                  backdropFilter: "blur(10px) !important", // Add blur effect
+                  border: "3px solid rgba(255,255,255,0.4) !important", // Add border
+                },
+              }}
+            >
               <CommentsSection
                 gameId={id}
                 user={user}
@@ -483,6 +861,12 @@ function GameDetailPage() {
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        sx={{
+          "& .MuiAlert-root": {
+            fontFamily: "'Bubblegum Sans', cursive",
+            borderRadius: 4,
+          },
+        }}
       >
         <Alert
           onClose={handleCloseSnackbar}

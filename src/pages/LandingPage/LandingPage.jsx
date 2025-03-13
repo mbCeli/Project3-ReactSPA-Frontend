@@ -1,19 +1,32 @@
-// LandingPage.jsx
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  Stack,
-  Paper,
-  Chip,
-} from "@mui/material";
+import { Box, Button, Typography, Stack, Paper, Chip } from "@mui/material";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 
 function LandingPage() {
   const navigate = useNavigate();
   const [selectedGameIndex, setSelectedGameIndex] = useState(2); // Initially select middle card
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  // Load custom bubble fonts
+  useEffect(() => {
+    // Add Google Fonts link for bubble fonts
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Fredoka+One&family=Luckiest+Guy&display=swap";
+    document.head.appendChild(link);
+
+    // Set fonts as loaded after a short delay to ensure they're applied
+    const timer = setTimeout(() => {
+      setFontsLoaded(true);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+      document.head.removeChild(link);
+    };
+  }, []);
 
   const gameCards = [
     {
@@ -110,38 +123,57 @@ function LandingPage() {
           height: "calc(100vh - 120px)",
         }}
       >
-        {/* Membership badge */}
-        <Box
-          sx={{
-            mb: 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "rgba(255,255,255,0.8)",
-            width: "310px", 
-            borderRadius: "20px",
-          }}
-        >
-          <SportsEsportsIcon sx={{ mr: 2, color: "#f44336" }} />
-          <Typography>FULP-Ironhack Las Palmas 2025</Typography>
+
+        <Box>
+          <Typography
+            variant="h2"
+            sx={{
+              fontFamily: "'Luckiest Guy', cursive",
+              color: "#42a5f5",
+              textShadow: "3px 3px 0px rgba(0,0,0,0.1)",
+              letterSpacing: "1px",
+              mb: 1,
+              opacity: fontsLoaded ? 1 : 0,
+              transition: "opacity 0.5s ease",
+            }}
+          >
+            Play with
+          </Typography>
         </Box>
 
-        {/* Hero text */}
-        <Typography variant="h2" fontWeight="bold" sx={{ mb: 1 }}>
-          Level Up Your Learning!
-        </Typography>
         <Typography
           variant="h4"
-          fontWeight="500"
-          sx={{ mb: 3, color: "#757575" }}
+          sx={{
+            fontFamily: "'Bubblegum Sans', cursive",
+            color: "#ba68c8",
+            mb: 3,
+            fontWeight: 400,
+            opacity: fontsLoaded ? 1 : 0,
+            transition: "opacity 0.5s ease",
+          }}
         >
-          Play, Learn, Code, Conquer
+          FULP-Ironhack Las Palmas 2025
         </Typography>
 
-        <Typography variant="body1" sx={{ maxWidth: 600, mx: "auto", mb: 6 }}>
-          Discover amazing games built by Ironhack developers. Challenge
-          yourself, have fun, and see what's possible when creativity meets
-          code!
+        <Typography
+          variant="body1"
+          sx={{
+            maxWidth: 800,
+            mx: "auto",
+            mb: 6,
+            fontFamily: "'Fredoka One', cursive",
+            fontSize: "1.1rem",
+            color: "#424242",
+            backgroundColor: "rgba(255,255,255,0.7)",
+            padding: "15px 20px",
+            borderRadius: "15px",
+            opacity: fontsLoaded ? 1 : 0,
+            transition: "opacity 0.5s ease",
+          }}
+        >
+          Discover amazing games built by talented full-stack development
+          students. Challenge yourself, have fun, and see what's possible when
+          creativity meets code!
         </Typography>
 
         {/* Game cards */}
@@ -180,7 +212,16 @@ function LandingPage() {
                   justifyContent="space-between"
                   alignItems="center"
                 >
-                  <Typography variant="h5" fontWeight="bold" color="white">
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontFamily: "'Fredoka One', cursive",
+                      color: "white",
+                      textShadow: "1px 1px 3px rgba(0,0,0,0.2)",
+                      opacity: fontsLoaded ? 1 : 0,
+                      transition: "opacity 0.5s ease",
+                    }}
+                  >
                     {game.name}
                   </Typography>
 
@@ -246,12 +287,16 @@ function LandingPage() {
             sx={{
               borderRadius: 28,
               px: 5,
-              py: 1.5,
+              py: 1,
               backgroundColor: "#42a5f5",
               "&:hover": {
                 backgroundColor: "#1e88e5",
               },
               fontSize: "1rem",
+              fontFamily: "'Fredoka One', cursive",
+              boxShadow: "0 4px 10px rgba(66, 165, 245, 0.4)",
+              opacity: fontsLoaded ? 1 : 0,
+              transition: "opacity 0.5s ease",
             }}
           >
             Log In
@@ -273,6 +318,9 @@ function LandingPage() {
                 borderWidth: 2,
               },
               fontSize: "1rem",
+              fontFamily: "'Fredoka One', cursive",
+              opacity: fontsLoaded ? 1 : 0,
+              transition: "opacity 0.5s ease",
             }}
           >
             Sign Up
@@ -317,6 +365,46 @@ function LandingPage() {
           borderRadius: "50%",
           bgcolor: "rgba(66, 165, 245, 0.3)", // Blue with opacity
           filter: "blur(25px)",
+        }}
+      />
+
+      {/* Additional bubble decorations */}
+      <Box
+        sx={{
+          position: "absolute",
+          right: "15%",
+          top: "15%",
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
+          bgcolor: "#ffcdd2", // Soft pink
+          opacity: 0.7,
+        }}
+      />
+
+      <Box
+        sx={{
+          position: "absolute",
+          left: "20%",
+          bottom: "25%",
+          width: 25,
+          height: 25,
+          borderRadius: "50%",
+          bgcolor: "#f8bbd0", // Medium pink
+          opacity: 0.6,
+        }}
+      />
+
+      <Box
+        sx={{
+          position: "absolute",
+          right: "25%",
+          bottom: "30%",
+          width: 35,
+          height: 35,
+          borderRadius: "50%",
+          bgcolor: "#42a5f5", // Bright blue
+          opacity: 0.5,
         }}
       />
     </Box>
