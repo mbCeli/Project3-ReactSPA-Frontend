@@ -175,7 +175,7 @@ const Sidebar = () => {
     animate: { scale: 1.3, opacity: 0, transition: { duration: 0.5 } },
   };
 
-  // Hide sidebar on certain pages or when playing a game
+  // to hide the side bar on these pages
   if (
     location.pathname === "/login" ||
     location.pathname === "/signup" ||

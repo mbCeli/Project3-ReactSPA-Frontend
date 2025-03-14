@@ -77,7 +77,7 @@ function ProfilePage() {
 
   // Load custom bubble fonts
   useEffect(() => {
-    // Add Google Fonts link for bubble fonts
+    // Google Fonts link for bubble fonts
     const link = document.createElement("link");
     link.rel = "stylesheet";
     link.href =
@@ -99,7 +99,6 @@ function ProfilePage() {
       try {
         setIsLoading(true);
         setHasError(false);
-
         // Fetch play history with error handling
         try {
           const historyResponse = await analyticsService.getUserPlayHistory();

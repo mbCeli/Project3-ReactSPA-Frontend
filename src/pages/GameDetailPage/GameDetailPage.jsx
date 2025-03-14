@@ -55,21 +55,19 @@ function GameDetailPage() {
 
   // Load custom bubble fonts
   useEffect(() => {
-    // Add Google Fonts link for bubble fonts
+    //Google Fonts link for bubble fonts
     const link = document.createElement("link");
     link.rel = "stylesheet";
     link.href =
       "https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Fredoka+One&family=Luckiest+Guy&display=swap";
     document.head.appendChild(link);
 
-    // Set fonts as loaded after a short delay to ensure they're applied
     const timer = setTimeout(() => {
       setFontsLoaded(true);
     }, 500);
 
     return () => {
       clearTimeout(timer);
-      // Don't remove the link if it might be used by other components
     };
   }, []);
 
@@ -120,12 +118,10 @@ function GameDetailPage() {
   };
 
   const handleCloseGame = () => {
-    // Update URL parameter immediately (before state update)
     const url = new URL(window.location);
     url.searchParams.delete("playing");
     window.history.replaceState({}, "", url);
 
-    // Update state
     setIsPlaying(false);
   };
 
