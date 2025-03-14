@@ -2,6 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Box, Button, Typography, Stack, Paper, Chip } from "@mui/material";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import ExtensionIcon from "@mui/icons-material/Extension"; // Puzzle icon
+import VideogameAssetIcon from "@mui/icons-material/VideogameAsset"; // Arcade icon
+import ExploreIcon from "@mui/icons-material/Explore"; // Adventure icon
+import PsychologyIcon from "@mui/icons-material/Psychology"; // Strategy icon
+import SchoolIcon from "@mui/icons-material/School"; // Educational icon
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -34,70 +39,132 @@ function LandingPage() {
       color: "#ffcdd2", // Using the custom soft pink from theme
       developer: "Puzzle Games",
       rating: "4.8",
-      image:
-        "https://images.unsplash.com/photo-1553481187-be93c21490a9?w=500&auto=format&fit=crop",
+      icon: <ExtensionIcon sx={{ fontSize: 60, color: "white" }} />,
+      animation: "float",
     },
     {
       name: "Arcade",
       color: "#f8bbd0", // Using the custom medium pink from theme
       developer: "Classic Fun",
       rating: "4.9",
-      image:
-        "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=500&auto=format&fit=crop",
+      icon: <VideogameAssetIcon sx={{ fontSize: 60, color: "white" }} />,
+      animation: "pulse",
     },
     {
       name: "Adventure",
       color: "#42a5f5", // Using the custom bright blue from theme
       developer: "Explore & Play",
       rating: "4.7",
-      image:
-        "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&auto=format&fit=crop",
+      icon: <ExploreIcon sx={{ fontSize: 60, color: "white" }} />,
+      animation: "spin",
     },
     {
       name: "Strategy",
       color: "#ba68c8", // Using the custom soft purple from theme
       developer: "Test Your Mind",
       rating: "4.6",
-      image:
-        "https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=500&auto=format&fit=crop",
+      icon: <PsychologyIcon sx={{ fontSize: 60, color: "white" }} />,
+      animation: "bounce",
     },
     {
       name: "Educational",
       color: "#66bb6a", // Green
       developer: "Learn & Play",
       rating: "4.5",
-      image:
-        "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500&auto=format&fit=crop",
+      icon: <SchoolIcon sx={{ fontSize: 60, color: "white" }} />,
+      animation: "wiggle",
     },
   ];
 
-  // Function to handle card rotation based on selected index
+  // Function to handle card positions in stair-like arrangement
   const getCardStyles = (index) => {
     const isSelected = index === selectedGameIndex;
     const distanceFromSelected = Math.abs(selectedGameIndex - index);
+    const isLeft = index < selectedGameIndex;
+    const isRight = index > selectedGameIndex;
 
+    // Base parameters
     let rotation = 0;
     let translateY = 0;
+    let translateX = 0;
     let scale = 1;
     let zIndex = 5;
 
     if (!isSelected) {
-      rotation =
-        index < selectedGameIndex
-          ? 15 * distanceFromSelected
-          : -15 * distanceFromSelected;
-      translateY = 20 * distanceFromSelected;
-      scale = 1 - 0.1 * distanceFromSelected;
+      // Set rotation based on position - less rotation for better visibility
+      rotation = isLeft ? 8 * distanceFromSelected : -8 * distanceFromSelected;
+
+      // Reduced vertical offset for more visibility
+      translateY = 15 * distanceFromSelected;
+
+      // Increased horizontal spread for more visibility
+      translateX = isLeft
+        ? -130 * distanceFromSelected
+        : 130 * distanceFromSelected;
+
+      // Less scale reduction for better visibility
+      scale = 1 - 0.05 * distanceFromSelected;
+
+      // Ensure proper stacking order
       zIndex = 5 - distanceFromSelected;
     }
 
     return {
-      transform: `perspective(1000px) rotateY(${rotation}deg) translateY(${translateY}px) scale(${scale})`,
+      transform: `perspective(1200px) translateX(${translateX}px) translateY(${translateY}px) rotateY(${rotation}deg) scale(${scale})`,
       zIndex,
       transition: "all 0.5s ease-out",
       cursor: "pointer",
-      opacity: scale,
+      opacity: Math.max(0.8, scale), // Increase minimum opacity
     };
+  };
+
+  // Animation keyframes definitions
+  const getAnimationStyle = (animationType) => {
+    switch (animationType) {
+      case "float":
+        return {
+          animation: "float 3s ease-in-out infinite",
+          "@keyframes float": {
+            "0%, 100%": { transform: "translateY(0)" },
+            "50%": { transform: "translateY(-15px)" },
+          },
+        };
+      case "pulse":
+        return {
+          animation: "pulse 2s ease-in-out infinite",
+          "@keyframes pulse": {
+            "0%, 100%": { transform: "scale(1)" },
+            "50%": { transform: "scale(1.1)" },
+          },
+        };
+      case "spin":
+        return {
+          animation: "spin 6s linear infinite",
+          "@keyframes spin": {
+            "0%": { transform: "rotate(0deg)" },
+            "100%": { transform: "rotate(360deg)" },
+          },
+        };
+      case "bounce":
+        return {
+          animation: "bounce 2s ease infinite",
+          "@keyframes bounce": {
+            "0%, 20%, 50%, 80%, 100%": { transform: "translateY(0)" },
+            "40%": { transform: "translateY(-20px)" },
+            "60%": { transform: "translateY(-10px)" },
+          },
+        };
+      case "wiggle":
+        return {
+          animation: "wiggle 2.5s ease-in-out infinite",
+          "@keyframes wiggle": {
+            "0%, 100%": { transform: "rotate(-3deg)" },
+            "50%": { transform: "rotate(3deg)" },
+          },
+        };
+      default:
+        return {};
+    }
   };
 
   return (
@@ -114,7 +181,7 @@ function LandingPage() {
       {/* Main content */}
       <Box
         sx={{
-          pt: 10,
+          pt: 3,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -123,7 +190,6 @@ function LandingPage() {
           height: "calc(100vh - 120px)",
         }}
       >
-
         <Box>
           <Typography
             variant="h2"
@@ -176,20 +242,21 @@ function LandingPage() {
           creativity meets code!
         </Typography>
 
-        {/* Game cards */}
+        {/* Game cards - now in stair-like arrangement with more visibility */}
         <Box
           sx={{
             display: "flex",
             justifyContent: "center",
             position: "relative",
-            perspective: 1000,
+            perspective: 1200,
             height: 400,
+            width: "100%",
           }}
         >
           {gameCards.map((game, index) => (
             <Paper
               key={game.name}
-              elevation={24}
+              elevation={index === selectedGameIndex ? 24 : 12}
               onClick={() => setSelectedGameIndex(index)}
               sx={{
                 width: 220,
@@ -197,13 +264,13 @@ function LandingPage() {
                 borderRadius: "60px 60px 0 0",
                 backgroundColor: game.color,
                 position: "absolute",
-                left: "calc(50% - 110px)",
+                left: "calc(50% - 110px)", // Center horizontally by default
                 ...getCardStyles(index),
                 overflow: "hidden",
                 boxShadow:
                   index === selectedGameIndex
                     ? "0 20px 40px rgba(0,0,0,0.2)"
-                    : "none",
+                    : "0 10px 20px rgba(0,0,0,0.15)",
               }}
             >
               <Box sx={{ p: 3, height: "100%", position: "relative" }}>
@@ -245,20 +312,49 @@ function LandingPage() {
                   {game.developer}
                 </Typography>
 
-                {/* Game image */}
+                {/* Animated icon instead of game image */}
                 <Box
                   sx={{
                     position: "absolute",
-                    bottom: -20,
-                    right: -20,
-                    width: 180,
-                    height: 180,
+                    bottom: 20,
+                    right: 20,
+                    width: 150,
+                    height: 150,
                     borderRadius: "50%",
-                    backgroundImage: `url(${game.image})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    filter: "drop-shadow(0 5px 5px rgba(0,0,0,0.3))",
-                    border: "4px solid rgba(255,255,255,0.3)",
+                    backgroundColor: "rgba(255,255,255,0.2)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+                    ...getAnimationStyle(game.animation),
+                  }}
+                >
+                  {game.icon}
+                </Box>
+
+                {/* Small decorative circles */}
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 70,
+                    left: 20,
+                    width: 30,
+                    height: 30,
+                    borderRadius: "50%",
+                    backgroundColor: "rgba(255,255,255,0.3)",
+                    animation: "float 3s ease-in-out infinite 0.7s",
+                  }}
+                />
+                <Box
+                  sx={{
+                    position: "absolute",
+                    bottom: 60,
+                    left: 40,
+                    width: 20,
+                    height: 20,
+                    borderRadius: "50%",
+                    backgroundColor: "rgba(255,255,255,0.2)",
+                    animation: "float 2.5s ease-in-out infinite 0.3s",
                   }}
                 />
               </Box>
