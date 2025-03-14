@@ -12,4 +12,3 @@ Web app that contains all the minigames done in the first project of the bootcam
   - Access to the web page: https://playwith-fulp-ironhack-2025.netlify.app
   - Access to the server: https://project3-reactspa-backend.onrender.com
   - Github backend repository: https://github.com/mbCeli/Project3-ReactSPA-Backend
-  - 
