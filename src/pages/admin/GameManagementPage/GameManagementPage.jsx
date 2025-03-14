@@ -61,7 +61,7 @@ function GameManagementPage() {
     message: "",
     severity: "success",
   });
-
+  
   useEffect(() => {
     fetchGames();
   }, []);
@@ -223,7 +223,7 @@ function GameManagementPage() {
         <CircularProgress />
       </Box>
     );
-  }
+  }; 
 
   return (
     <Box
