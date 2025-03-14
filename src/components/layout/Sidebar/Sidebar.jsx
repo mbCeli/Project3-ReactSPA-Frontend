@@ -180,8 +180,9 @@ const Sidebar = () => {
     location.pathname === "/login" ||
     location.pathname === "/signup" ||
     location.pathname === "/logout" ||
-    location.pathname === "*" ||
+    location.pathname === "*" || //Not found
     location.pathname === "/" ||
+    isGameDetailPage && !isPlaying ||
     !isSidebarVisible
   ) {
     return null;

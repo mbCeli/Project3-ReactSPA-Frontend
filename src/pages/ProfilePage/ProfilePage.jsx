@@ -65,6 +65,7 @@ function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [tabValue, setTabValue] = useState(0);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
   // Edit profile states
   const [openEditDialog, setOpenEditDialog] = useState(false);
@@ -73,6 +74,25 @@ function ProfilePage() {
     message: "",
     severity: "success",
   });
+
+  // Load custom bubble fonts
+  useEffect(() => {
+    // Add Google Fonts link for bubble fonts
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Fredoka+One&family=Luckiest+Guy&display=swap";
+    document.head.appendChild(link);
+
+    // Set fonts as loaded after a short delay to ensure they're applied
+    const timer = setTimeout(() => {
+      setFontsLoaded(true);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -171,6 +191,14 @@ function ProfilePage() {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
         <CircularProgress />
+        <Typography
+          sx={{
+            ml: 2,
+            fontFamily: "'Fredoka One', cursive",
+          }}
+        >
+          Loading your profile...
+        </Typography>
       </Box>
     );
   }
@@ -178,14 +206,23 @@ function ProfilePage() {
   if (hasError || !user) {
     return (
       <Box sx={{ textAlign: "center", py: 5 }}>
-        <Typography variant="h6" color="error" gutterBottom>
+        <Typography
+          variant="h6"
+          color="error"
+          gutterBottom
+          sx={{ fontFamily: "'Luckiest Guy', cursive" }}
+        >
           There was a problem loading your profile
         </Typography>
         <Button
           variant="contained"
           color="primary"
           onClick={() => window.location.reload()}
-          sx={{ mt: 2 }}
+          sx={{
+            mt: 2,
+            fontFamily: "'Fredoka One', cursive",
+            textTransform: "none",
+          }}
         >
           Try Again
         </Button>
@@ -194,7 +231,15 @@ function ProfilePage() {
   }
 
   return (
-    <motion.div initial="hidden" animate="visible" variants={containerVariants}>
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      style={{
+        transition: "opacity 0.5s ease",
+        opacity: fontsLoaded ? 1 : 0,
+      }}
+    >
       <Box
         sx={{
           p: 3,
@@ -216,6 +261,7 @@ function ProfilePage() {
             variant="h4"
             component={motion.h1}
             variants={itemVariants}
+            sx={{ fontFamily: "'Luckiest Guy', cursive" }}
           >
             Profile
           </Typography>
@@ -239,7 +285,19 @@ function ProfilePage() {
             variants={itemVariants}
           >
             {/* User Profile Header with Avatar, Name, Edit Button */}
-            <UserProfileHeader user={user} onEditClick={handleEditOpen} />
+            <UserProfileHeader
+              user={user}
+              onEditClick={handleEditOpen}
+              sx={{
+                "& .MuiTypography-root": {
+                  fontFamily: "'Fredoka One', cursive",
+                },
+                "& .MuiButton-root": {
+                  fontFamily: "'Fredoka One', cursive",
+                  textTransform: "none",
+                },
+              }}
+            />
 
             {/* User Details Card */}
             <UserProfileDetails
@@ -247,6 +305,15 @@ function ProfilePage() {
               playHistory={playHistory}
               favoriteGames={favoriteGames}
               onAdminDashboardClick={() => navigate("/admin/dashboard")}
+              sx={{
+                "& .MuiTypography-root": {
+                  fontFamily: "'Bubblegum Sans', cursive",
+                },
+                "& .MuiButton-root": {
+                  fontFamily: "'Fredoka One', cursive",
+                  textTransform: "none",
+                },
+              }}
             />
           </Box>
 
@@ -268,7 +335,13 @@ function ProfilePage() {
                 variant="fullWidth"
                 indicatorColor="primary"
                 textColor="primary"
-                sx={{ minHeight: "64px" }} // Taller tabs for better visibility
+                sx={{
+                  minHeight: "64px", // Taller tabs for better visibility
+                  "& .MuiTab-root": {
+                    fontFamily: "'Fredoka One', cursive",
+                    textTransform: "none",
+                  },
+                }}
               >
                 <Tab icon={<SportsEsportsIcon />} label="Play History" />
                 <Tab icon={<FavoriteIcon />} label="Favorites" />
@@ -298,29 +371,60 @@ function ProfilePage() {
                       mb: 2,
                     }}
                   >
-                    <Typography variant="h6">Recent Play History</Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontFamily: "'Fredoka One', cursive" }}
+                    >
+                      Recent Play History
+                    </Typography>
                     <Chip
                       icon={<TrendingUpIcon />}
                       label={`${playHistory.length} Total Sessions`}
                       size="small"
                       color="primary"
                       variant="outlined"
+                      sx={{
+                        fontFamily: "'Bubblegum Sans', cursive",
+                      }}
                     />
                   </Box>
 
-                  <PlayHistoryList
-                    playHistory={playHistory}
-                    onGameClick={(gameId) => navigate(`/games/${gameId}`)}
-                    emptyAction={
-                      <Button
-                        variant="contained"
-                        sx={{ mt: 2 }}
-                        onClick={() => navigate("/games")}
-                      >
-                        Find Games to Play
-                      </Button>
-                    }
-                  />
+                  {/* Custom-styled PlayHistoryList to fix image/text overlap */}
+                  <Box
+                    sx={{
+                      "& .MuiListItem-root": {
+                        marginBottom: "10px",
+                      },
+                      "& .MuiListItemAvatar-root": {
+                        minWidth: "70px", // Increase minimum width for avatar container
+                      },
+                      "& .MuiListItemText-root": {
+                        marginLeft: "8px", // Add margin to move text to right
+                        paddingLeft: "8px", // Add padding to move text to right
+                      },
+                      "& .MuiTypography-root": {
+                        fontFamily: "'Bubblegum Sans', cursive",
+                      },
+                    }}
+                  >
+                    <PlayHistoryList
+                      playHistory={playHistory}
+                      onGameClick={(gameId) => navigate(`/games/${gameId}`)}
+                      emptyAction={
+                        <Button
+                          variant="contained"
+                          sx={{
+                            mt: 2,
+                            fontFamily: "'Fredoka One', cursive",
+                            textTransform: "none",
+                          }}
+                          onClick={() => navigate("/games")}
+                        >
+                          Find Games to Play
+                        </Button>
+                      }
+                    />
+                  </Box>
                 </motion.div>
               )}
 
@@ -339,30 +443,50 @@ function ProfilePage() {
                       mb: 2,
                     }}
                   >
-                    <Typography variant="h6">Favorite Games</Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontFamily: "'Fredoka One', cursive" }}
+                    >
+                      Favorite Games
+                    </Typography>
                     <Chip
                       icon={<FavoriteIcon />}
                       label={`${favoriteGames.length} Games`}
                       size="small"
                       color="error"
                       variant="outlined"
+                      sx={{
+                        fontFamily: "'Bubblegum Sans', cursive",
+                      }}
                     />
                   </Box>
 
-                  <FavouriteGamesList
-                    games={favoriteGames}
-                    onGameClick={(gameId) => navigate(`/games/${gameId}`)}
-                    emptyAction={
-                      <Button
-                        variant="contained"
-                        color="error"
-                        sx={{ mt: 2 }}
-                        onClick={() => navigate("/games")}
-                      >
-                        Find Games to Like
-                      </Button>
-                    }
-                  />
+                  <Box
+                    sx={{
+                      "& .MuiTypography-root": {
+                        fontFamily: "'Bubblegum Sans', cursive",
+                      },
+                    }}
+                  >
+                    <FavouriteGamesList
+                      games={favoriteGames}
+                      onGameClick={(gameId) => navigate(`/games/${gameId}`)}
+                      emptyAction={
+                        <Button
+                          variant="contained"
+                          color="error"
+                          sx={{
+                            mt: 2,
+                            fontFamily: "'Fredoka One', cursive",
+                            textTransform: "none",
+                          }}
+                          onClick={() => navigate("/games")}
+                        >
+                          Find Games to Like
+                        </Button>
+                      }
+                    />
+                  </Box>
                 </motion.div>
               )}
 
@@ -381,7 +505,12 @@ function ProfilePage() {
                       mb: 2,
                     }}
                   >
-                    <Typography variant="h6">Your Achievements</Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontFamily: "'Fredoka One', cursive" }}
+                    >
+                      Your Achievements
+                    </Typography>
                     <Chip
                       icon={<EmojiEventsIcon />}
                       label={
@@ -393,22 +522,37 @@ function ProfilePage() {
                       size="small"
                       color="warning"
                       variant="outlined"
+                      sx={{
+                        fontFamily: "'Bubblegum Sans', cursive",
+                      }}
                     />
                   </Box>
 
-                  <AchievementsList
-                    gameAchievements={achievements}
-                    emptyAction={
-                      <Button
-                        variant="contained"
-                        color="warning"
-                        sx={{ mt: 2 }}
-                        onClick={() => navigate("/games")}
-                      >
-                        Go Earn Achievements
-                      </Button>
-                    }
-                  />
+                  <Box
+                    sx={{
+                      "& .MuiTypography-root": {
+                        fontFamily: "'Bubblegum Sans', cursive",
+                      },
+                    }}
+                  >
+                    <AchievementsList
+                      gameAchievements={achievements}
+                      emptyAction={
+                        <Button
+                          variant="contained"
+                          color="warning"
+                          sx={{
+                            mt: 2,
+                            fontFamily: "'Fredoka One', cursive",
+                            textTransform: "none",
+                          }}
+                          onClick={() => navigate("/games")}
+                        >
+                          Go Earn Achievements
+                        </Button>
+                      }
+                    />
+                  </Box>
                 </motion.div>
               )}
 
@@ -427,30 +571,50 @@ function ProfilePage() {
                       mb: 2,
                     }}
                   >
-                    <Typography variant="h6">Your Game Rankings</Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontFamily: "'Fredoka One', cursive" }}
+                    >
+                      Your Game Rankings
+                    </Typography>
                     <Chip
                       icon={<StarIcon />}
                       label={`${ranks.length} Games Ranked`}
                       size="small"
                       color="info"
                       variant="outlined"
+                      sx={{
+                        fontFamily: "'Bubblegum Sans', cursive",
+                      }}
                     />
                   </Box>
 
-                  <UserRankingsList
-                    rankings={ranks}
-                    onGameClick={(gameId) => navigate(`/games/${gameId}`)}
-                    emptyAction={
-                      <Button
-                        variant="contained"
-                        color="info"
-                        sx={{ mt: 2 }}
-                        onClick={() => navigate("/games")}
-                      >
-                        Get on the Leaderboards
-                      </Button>
-                    }
-                  />
+                  <Box
+                    sx={{
+                      "& .MuiTypography-root": {
+                        fontFamily: "'Bubblegum Sans', cursive",
+                      },
+                    }}
+                  >
+                    <UserRankingsList
+                      rankings={ranks}
+                      onGameClick={(gameId) => navigate(`/games/${gameId}`)}
+                      emptyAction={
+                        <Button
+                          variant="contained"
+                          color="info"
+                          sx={{
+                            mt: 2,
+                            fontFamily: "'Fredoka One', cursive",
+                            textTransform: "none",
+                          }}
+                          onClick={() => navigate("/games")}
+                        >
+                          Get on the Leaderboards
+                        </Button>
+                      }
+                    />
+                  </Box>
                 </motion.div>
               )}
             </Box>
@@ -476,7 +640,10 @@ function ProfilePage() {
         <Alert
           onClose={handleCloseSnackbar}
           severity={snackbar.severity}
-          sx={{ width: "100%" }}
+          sx={{
+            width: "100%",
+            fontFamily: "'Bubblegum Sans', cursive",
+          }}
         >
           {snackbar.message}
         </Alert>

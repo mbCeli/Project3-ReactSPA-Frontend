@@ -53,8 +53,8 @@ function UserProfileHeader({ user, onEditClick }) {
           <IconButton
             sx={{
               position: "absolute",
-              top: 10,
-              right: 10,
+              top: 15,
+              right: 15,
               backgroundColor: "rgba(255,255,255,0.8)",
               "&:hover": { backgroundColor: "rgba(255,255,255,0.9)" },
             }}

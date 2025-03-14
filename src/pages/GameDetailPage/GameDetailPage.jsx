@@ -368,6 +368,7 @@ function GameDetailPage() {
               borderRadius: 28,
               px: 3,
               py: 1,
+              zIndex: 2,
               fontFamily: "'Fredoka One', cursive",
               textTransform: "none",
               backgroundColor: "#42a5f5",
@@ -462,6 +463,31 @@ function GameDetailPage() {
               textShadow: "2px 2px 0px rgba(0,0,0,0.05)",
             }}
           >
+            <Button
+              variant="contained"
+              onClick={() => navigate("/games")}
+              sx={{
+                mt: 2,
+                borderRadius: 28,
+                border: "1px solid #42a5f5",
+                px: 3,
+                py: 1,
+                zIndex: 2,
+                fontFamily: "'Fredoka One', cursive",
+                textTransform: "none",
+                backgroundColor: "transparent",
+                position: "absolute",
+                left: 30,
+                top: 3,
+                "&:hover": {
+                  backgroundColor: "#ffcdd2",
+                  transform: "scale(1.05)",
+                  border: "1px solid #ffcdd2",
+                },
+              }}
+            >
+              Back to Games
+            </Button>
             {game.title}
           </Typography>
           <IconButton
@@ -690,7 +716,7 @@ function GameDetailPage() {
                   width: "80%",
                   maxWidth: "600px",
                   maxHeight: "400px",
-                  borderRadius: 8,
+                  borderRadius: 4,
                   display: "flex",
                   flexDirection: "column",
                   transition: "all 0.3s ease-in-out",
