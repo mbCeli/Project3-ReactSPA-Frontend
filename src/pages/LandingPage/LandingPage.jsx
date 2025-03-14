@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Box, Button, Typography, Stack, Paper, Chip } from "@mui/material";
-import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
 import ExtensionIcon from "@mui/icons-material/Extension"; // Puzzle icon
 import VideogameAssetIcon from "@mui/icons-material/VideogameAsset"; // Arcade icon
 import ExploreIcon from "@mui/icons-material/Explore"; // Adventure icon

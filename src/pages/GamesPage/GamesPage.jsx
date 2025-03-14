@@ -51,11 +51,6 @@ function GamesPage() {
     };
   }, []);
 
-  const handleLogout = () => {
-    console.log("logout button clicked");
-    navigate("/logout");
-  };
-
   useEffect(() => {
     getGames();
   }, [sortOption]); // get games when sort option changes

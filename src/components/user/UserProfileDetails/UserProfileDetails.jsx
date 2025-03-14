@@ -25,7 +25,6 @@ function UserProfileDetails({
   useEffect(() => {
     if (user) {
       setUserData(user);
-      console.log("UserProfileDetails received new user data:", user);
     }
   }, [user]);
 
@@ -39,7 +38,6 @@ function UserProfileDetails({
 
       // Check if date is valid
       if (isNaN(date.getTime())) {
-        console.log("Invalid date:", dateString);
         return "N/A";
       }
 

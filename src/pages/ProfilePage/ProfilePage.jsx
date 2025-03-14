@@ -114,7 +114,6 @@ function ProfilePage() {
         // Fetch favorite games with error handling
         try {
           const favouritesResponse = await gameService.getUserFavouriteGames();
-          console.log("Favourites response:", favouritesResponse);
           setFavoriteGames(
             Array.isArray(favouritesResponse) ? favouritesResponse : []
           );

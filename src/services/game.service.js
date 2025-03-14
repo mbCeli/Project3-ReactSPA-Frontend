@@ -73,17 +73,14 @@ class GameService {
 
       // Get the favorite IDs from the full user data
       const favouriteIds = userResponse.data.favourites || [];
-      console.log("Favourite IDs:", favouriteIds);
 
       // If user has no favorites, return empty array
       if (!favouriteIds || favouriteIds.length === 0) {
-        console.log("No favourites found");
         return [];
       }
 
       // Get details for all favorited games
       const games = await this.getGamesByIds(favouriteIds);
-      console.log("Favourite games details:", games);
       return games;
     } catch (error) {
       console.error("Error fetching favourite games:", error);

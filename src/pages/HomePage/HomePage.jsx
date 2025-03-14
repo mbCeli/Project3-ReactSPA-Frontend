@@ -55,10 +55,8 @@ function HomePage() {
       if (isLoggedIn && user) {
         try {
           setIsLoading(true);
-          console.log("Fetching play history...");
           // Use analyticsService instead of userService for getting play history
           const historyResponse = await analyticsService.getUserPlayHistory();
-          console.log("Play history response:", historyResponse.data);
 
           if (historyResponse.data && historyResponse.data.length > 0) {
             // Sort by date and get the most recent
@@ -67,7 +65,6 @@ function HomePage() {
                 new Date(b.playedAt || b.playDate) -
                 new Date(a.playedAt || a.playDate)
             );
-            console.log("Sorted history:", sortedHistory);
 
             // Check if the game object is already populated
             if (sortedHistory[0] && sortedHistory[0].game) {
