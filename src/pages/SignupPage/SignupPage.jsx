@@ -15,6 +15,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  CircularProgress,
 } from "@mui/material";
 
 function SignupPage() {
@@ -26,6 +27,7 @@ function SignupPage() {
   const [username, setUsername] = useState("");
   const [ageRange, setAgeRange] = useState("");
   const [errorMessage, setErrorMessage] = useState(undefined);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
   const navigate = useNavigate();
@@ -60,10 +62,13 @@ function SignupPage() {
 
   const handleSignupSubmit = (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMessage(undefined);
 
     // Check if passwords match
     if (password !== confirmPassword) {
       setErrorMessage("Passwords don't match");
+      setIsSubmitting(false);
       return;
     }
 
@@ -80,12 +85,21 @@ function SignupPage() {
     authService
       .signup(requestBody)
       .then((response) => {
-        navigate("/login");
+        // Redirect to login page with success message
+        navigate("/login", {
+          state: {
+            signupSuccess: true,
+            message: "Account created successfully! Please log in.",
+          },
+        });
       })
       .catch((error) => {
+        console.error("Signup error:", error);
         const errorDescription =
-          error.response?.data?.message || "Error signing up";
+          error.response?.data?.message ||
+          "Error creating account. Please try again.";
         setErrorMessage(errorDescription);
+        setIsSubmitting(false);
       });
   };
 
@@ -111,7 +125,7 @@ function SignupPage() {
           width: 80,
           height: 80,
           borderRadius: "50%",
-          bgcolor: "rgba(255, 205, 210, 0.5)", 
+          bgcolor: "rgba(255, 205, 210, 0.5)",
           filter: "blur(5px)",
           animation: "float 8s ease-in-out infinite",
           "@keyframes float": {
@@ -128,7 +142,7 @@ function SignupPage() {
           width: 120,
           height: 120,
           borderRadius: "50%",
-          bgcolor: "rgba(186, 104, 200, 0.3)", 
+          bgcolor: "rgba(186, 104, 200, 0.3)",
           filter: "blur(8px)",
           animation: "float 10s ease-in-out infinite 1s",
         }}
@@ -141,7 +155,7 @@ function SignupPage() {
           width: 60,
           height: 60,
           borderRadius: "50%",
-          bgcolor: "rgba(66, 165, 245, 0.4)", 
+          bgcolor: "rgba(66, 165, 245, 0.4)",
           filter: "blur(4px)",
           animation: "float 6s ease-in-out infinite 0.5s",
         }}
@@ -361,6 +375,7 @@ function SignupPage() {
                 type="submit"
                 fullWidth
                 variant="contained"
+                disabled={isSubmitting}
                 sx={{
                   borderRadius: 28,
                   py: 1.5,
@@ -376,7 +391,11 @@ function SignupPage() {
                   boxShadow: "0 4px 10px rgba(66, 165, 245, 0.4)",
                 }}
               >
-                Sign Up
+                {isSubmitting ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Sign Up"
+                )}
               </Button>
             </Stack>
           </Box>

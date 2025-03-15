@@ -1,6 +1,6 @@
 import "./LoginPage.css";
 import { useState, useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import authService from "../../services/auth.service";
 import {
@@ -18,12 +18,25 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(undefined);
+  const [successMessage, setSuccessMessage] = useState(undefined);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { storeToken, authenticateUser } = useContext(AuthContext);
+
+  // Check for signup success message in navigation state
+  useEffect(() => {
+    if (location.state?.signupSuccess) {
+      setSuccessMessage(
+        location.state.message || "Account created successfully! Please log in."
+      );
+      // Clear the state to prevent showing the message on refreshes
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   // Load custom bubble fonts
   useEffect(() => {
@@ -51,6 +64,8 @@ function LoginPage() {
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     setIsAnimating(true);
+    setErrorMessage(undefined);
+    setSuccessMessage(undefined);
 
     const requestBody = { email, password };
 
@@ -66,7 +81,9 @@ function LoginPage() {
       })
       .catch((error) => {
         setIsAnimating(false);
-        const errorDescription = error.response.data.message;
+        const errorDescription =
+          error.response?.data?.message ||
+          "Login failed. Please check your credentials.";
         setErrorMessage(errorDescription);
       });
   };
@@ -107,7 +124,7 @@ function LoginPage() {
           width: 80,
           height: 80,
           borderRadius: "50%",
-          bgcolor: "#f8bbd0", 
+          bgcolor: "#f8bbd0",
           opacity: 0.4,
           animation: "float 9s ease-in-out infinite 1s",
         }}
@@ -120,7 +137,7 @@ function LoginPage() {
           width: 120,
           height: 120,
           borderRadius: "50%",
-          bgcolor: "#42a5f5", 
+          bgcolor: "#42a5f5",
           opacity: 0.2,
           animation: "float 8s ease-in-out infinite 0.5s",
         }}
@@ -159,6 +176,19 @@ function LoginPage() {
           >
             Welcome Back!
           </Typography>
+
+          {successMessage && (
+            <Alert
+              severity="success"
+              sx={{
+                mb: 3,
+                borderRadius: 4,
+                fontFamily: "'Bubblegum Sans', cursive",
+              }}
+            >
+              {successMessage}
+            </Alert>
+          )}
 
           <Box component="form" onSubmit={handleLoginSubmit} sx={{ mt: 2 }}>
             <TextField
