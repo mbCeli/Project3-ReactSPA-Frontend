@@ -10,6 +10,7 @@ import {
   Chip,
 } from "@mui/material";
 import SportsEsportsIcon from "@mui/icons-material/SportsEsports";
+import BoltIcon from "@mui/icons-material/Bolt";
 
 function GameCardComponent({ game }) {
   const [elevation, setElevation] = useState(1);
@@ -131,20 +132,56 @@ function GameCardComponent({ game }) {
             >
               {game.title}
             </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              {game.difficulty && (
+                <Box
+                  size="small"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {
+                    game.difficulty === "Easy" ? (
+                      <BoltIcon sx={{ color: "green" }} fontSize="small" />
+                    ) : game.difficulty === "Medium" ? (
+                      <>
+                        <BoltIcon sx={{ color: "orange" }} fontSize="small" />
+                        <BoltIcon sx={{ color: "orange" }} fontSize="small" />
+                      </>
+                    ) : game.difficulty === "Hard" ? (
+                      <>
+                        <BoltIcon sx={{ color: "red" }} fontSize="small" />
+                        <BoltIcon sx={{ color: "red" }} fontSize="small" />
+                        <BoltIcon sx={{ color: "red" }} fontSize="small" />
+                      </>
+                    ) : (
+                      "error"
+                    )
+                  }
+                </Box>
+              )}
 
-            {game.category && (
-              <Chip
-                label={game.category}
-                size="small"
-                sx={{
-                  backgroundColor: categoryColor,
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: "0.7rem",
-                  height: "22px",
-                }}
-              />
-            )}
+              {game.category && (
+                <Chip
+                  label={game.category}
+                  size="small"
+                  sx={{
+                    backgroundColor: categoryColor,
+                    color: "white",
+                    fontWeight: "bold",
+                    fontSize: "0.7rem",
+                    height: "22px",
+                  }}
+                />
+              )}
+            </Box>
           </Box>
 
           <Typography
