@@ -22,14 +22,9 @@ import {
   Select,
   MenuItem,
   Divider,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
   Avatar,
   IconButton,
   Tooltip,
-  Link,
   LinearProgress,
   Table,
   TableBody,
@@ -43,9 +38,6 @@ import {
 import GamesIcon from "@mui/icons-material/Games";
 import PeopleIcon from "@mui/icons-material/People";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
-import TimelineIcon from "@mui/icons-material/Timeline";
-import StarIcon from "@mui/icons-material/Star";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import RefreshIcon from "@mui/icons-material/Refresh";
