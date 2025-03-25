@@ -1,0 +1,38 @@
+/* Custom scrollbar for the chat window */
+.MuiBox-root {
+  scrollbar-width: thin;
+  scrollbar-color: #bbb transparent;
+}
+
+.MuiBox-root::-webkit-scrollbar {
+  width: 6px;
+}
+
+.MuiBox-root::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.MuiBox-root::-webkit-scrollbar-thumb {
+  background-color: #bbb;
+  border-radius: 10px;
+}
+
+/* Animations for messages */
+@keyframes slide-in-right {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-in-left {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Apply animations to message bubbles */
+.user-message {
+  animation: slide-in-right 0.3s ease-out;
+}
+
+.assistant-message {
+  animation: slide-in-left 0.3s ease-out;
+}

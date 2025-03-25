@@ -8,11 +8,11 @@ const Footer = () => {
       sx={{
         position: "fixed",
         bottom: 0,
-        right: 0,
+        left: 0,
         padding: "8px 16px",
         backgroundColor: "rgba(0, 0, 0, 0.1)",
         backdropFilter: "blur(5px)",
-        borderTopLeftRadius: "8px",
+        borderTopRightRadius: "8px",
         display: "flex",
         alignItems: "center",
         gap: 1,

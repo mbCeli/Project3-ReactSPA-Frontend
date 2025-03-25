@@ -101,7 +101,7 @@ const Sidebar = () => {
     padding: "15px 10px",
     backgroundColor: "rgba(248, 187, 208, 0.9)", // Updated to use rgba for transparency
     backdropFilter: "blur(10px)",
-    boxShadow: "0px 8px 25px rgba(0, 0, 0, 0.15)",
+    /* boxShadow: "0px 8px 25px rgba(0, 0, 0, 0.15)", */
     width: 70,
     zIndex: 1000,
     border: "3px solid rgba(255, 255, 255, 0.6)",

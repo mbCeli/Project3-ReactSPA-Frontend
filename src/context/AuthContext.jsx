@@ -62,6 +62,19 @@ function AuthProviderWrapper(props) {
   const logOutUser = () => {
     // Upon logout, remove the token from the localStorage
     removeToken();
+
+    // Clear the chat history for the current user
+    if (user && user._id) {
+      sessionStorage.removeItem(`chat_history_${user._id}`);
+    }
+
+    // You might want to clear all session storage related to chat
+    Object.keys(sessionStorage).forEach((key) => {
+      if (key.startsWith("chat_history_")) {
+        sessionStorage.removeItem(key);
+      }
+    });
+    
     setIsLoggedIn(false);
     setUser(null);
   };
