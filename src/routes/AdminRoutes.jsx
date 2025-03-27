@@ -1,10 +1,8 @@
 import IsPrivate from "../components/IsPrivate/IsPrivate";
 
-import DashboardPage from "../pages/Admin/DashboardPage/DashboardPage";
-import GameManagementPage from "../pages/Admin/GameManagementPage/GameManagementPage";
-import UserManagementPage from "../pages/Admin/UserManagementPage/UserManagementPage";
-
-
+import DashboardPage from "../pages/AdminPage/DashboardPage/DashboardPage";
+import GameManagementPage from "../pages/AdminPage/GameManagementPage/GameManagementPage";
+import UserManagementPage from "../pages/AdminPage/UserManagementPage/UserManagementPage";
 
 const adminRoutes = {
   path: "dashboard",

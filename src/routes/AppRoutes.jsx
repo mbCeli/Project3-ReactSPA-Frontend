@@ -15,10 +15,13 @@ import GamesPage from "../pages/GamesPage/GamesPage";
 import GameDetailPage from "../pages/GameDetailPage/GameDetailPage";
 import LeaderboardPage from "../pages/LeaderboardPage/LeaderboardPage";
 
+
+
 // Admin Pages
-import DashboardPage from "../pages/Admin/DashboardPage/DashboardPage";
-import GameManagementPage from "../pages/Admin/GameManagementPage/GameManagementPage";
-import UserManagementPage from "../pages/Admin/UserManagementPage/UserManagementPage";
+import DashboardPage from "../pages/AdminPage/DashboardPage/DashboardPage";
+import GameManagementPage from "../pages/AdminPage/GameManagementPage/GameManagementPage";
+import UserManagementPage from "../pages/AdminPage/UserManagementPage/UserManagementPage";
+
 
 const router = createBrowserRouter([
   {
